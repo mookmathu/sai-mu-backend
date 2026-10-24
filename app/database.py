@@ -9,6 +9,14 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from .config import settings
 
+# SQLAlchemy รุ่นใหม่บางรุ่นเลือก psycopg (v3) เป็นไดรเวอร์เริ่มต้นเมื่อ URL ขึ้นต้นด้วย postgresql://
+# แต่เราติดตั้ง psycopg2 — ระบุไดรเวอร์ให้ชัดเพื่อให้ทำงานเหมือนกันทุกเครื่อง (รวมถึงบน Render)
+_db_url = settings.database_url
+if _db_url.startswith("postgresql://"):
+    _db_url = "postgresql+psycopg2://" + _db_url[len("postgresql://"):]
+elif _db_url.startswith("postgres://"):
+    _db_url = "postgresql+psycopg2://" + _db_url[len("postgres://"):]
+
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 
 # pool_pre_ping=True: เช็คว่า connection ที่หยิบมาจาก pool ยังใช้ได้จริงก่อน
@@ -22,7 +30,7 @@ if not settings.database_url.startswith("sqlite"):
     engine_kwargs["pool_pre_ping"] = True
     engine_kwargs["pool_recycle"] = 300
 
-engine = create_engine(settings.database_url, **engine_kwargs)
+engine = create_engine(_db_url, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
