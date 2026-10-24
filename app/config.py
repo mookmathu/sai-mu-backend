@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_password: str = ""
     smtp_from: str = ""  # ว่าง = ใช้ smtp_user
+    # ส่งอีเมลผ่าน Brevo HTTPS API (ใช้เมื่อโฮสต์บล็อกพอร์ต SMTP เช่น Render แผน Free)
+    # ถ้าตั้ง brevo_api_key จะใช้ทางนี้ก่อน SMTP — brevo_sender คืออีเมลที่ยืนยันไว้ใน Brevo (ว่าง = ใช้ smtp_user)
+    brevo_api_key: str = ""
+    brevo_sender: str = ""
     otp_expire_minutes: int = 5
     otp_max_attempts: int = 5  # กรอกผิดเกินนี้ = รหัสนั้นใช้ไม่ได้แล้ว ต้องขอใหม่
     otp_resend_cooldown_seconds: int = 60

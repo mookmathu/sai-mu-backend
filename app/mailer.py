@@ -11,6 +11,8 @@ mailer.py
 import logging
 from pathlib import Path
 import smtplib
+
+import requests
 from email.message import EmailMessage
 from email.utils import formataddr, make_msgid, parseaddr
 
@@ -92,11 +94,43 @@ def _html_body(code: str, action: str, minutes: int, logo_cid: str | None = None
 </body></html>"""
 
 
+def _send_via_brevo(to_email: str, code: str, action: str, minutes: int) -> None:
+    """ส่งผ่าน Brevo HTTPS API (พอร์ต 443) — ใช้บนโฮสต์ที่บล็อก SMTP ไม่โยน exception ออกไป"""
+    sender_email = settings.brevo_sender or settings.smtp_user
+    text = (
+        "สวัสดีค่ะ จาก Mutelove\n\n"
+        f"รหัสสำหรับ{action}ของคุณคือ\n\n    {code}\n\n"
+        f"รหัสนี้ใช้ได้ {minutes} นาที และใช้ได้เพียงครั้งเดียว\n"
+        "เพื่อความปลอดภัย กรุณาอย่าบอกรหัสนี้กับใคร ทีมงานจะไม่ขอรหัสนี้จากคุณ\n"
+        "หากคุณไม่ได้เป็นผู้ขอรหัส ไม่ต้องทำอะไร ปล่อยผ่านได้เลยค่ะ\n\n"
+        "Mutelove - ดูดวงกับน้องมู\n"
+    )
+    payload = {
+        "sender": {"name": "Mutelove", "email": sender_email},
+        "to": [{"email": to_email}],
+        "replyTo": {"email": sender_email},
+        "subject": f"{code} คือรหัสยืนยันของคุณ - Mutelove",
+        "htmlContent": _html_body(code, action, minutes, None),
+        "textContent": text,
+    }
+    try:
+        r = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            json=payload,
+            headers={"api-key": settings.brevo_api_key, "accept": "application/json"},
+            timeout=15,
+        )
+        if r.status_code >= 300:
+            logger.error("Brevo ส่ง OTP ไปที่ %s ไม่สำเร็จ: HTTP %s %s", to_email, r.status_code, r.text[:300])
+    except Exception:  # noqa: BLE001
+        logger.exception("ส่งอีเมล OTP (Brevo) ไปที่ %s ไม่สำเร็จ", to_email)
+
+
 def send_otp_email(to_email: str, code: str, purpose: str) -> None:
     """ส่ง OTP ไปที่ to_email — ไม่โยน exception ออกไป (ถ้าส่งไม่ได้แค่ log ไว้
     ผู้ใช้กด "ส่งรหัสอีกครั้ง" ได้) เพราะฟังก์ชันนี้รันใน background task
     หลังตอบ request ไปแล้ว ไม่มีที่ให้ส่ง error กลับไปหาผู้ใช้อยู่ดี"""
-    if not settings.smtp_host:
+    if not settings.smtp_host and not settings.brevo_api_key:
         logger.warning("[DEV] SMTP ไม่ได้ตั้งค่า — OTP สำหรับ %s (%s) คือ %s", to_email, purpose, code)
         return
 
@@ -105,6 +139,10 @@ def send_otp_email(to_email: str, code: str, purpose: str) -> None:
         "login": "ยืนยันการเข้าสู่ระบบ",
     }.get(purpose, "ตั้งรหัสผ่านใหม่")
     minutes = settings.otp_expire_minutes
+
+    if settings.brevo_api_key:
+        _send_via_brevo(to_email, code, action, minutes)
+        return
 
     msg = EmailMessage()
     msg["Subject"] = f"{code} คือรหัสยืนยันของคุณ - Mutelove"
