@@ -1,0 +1,454 @@
+[
+ {
+  "question": "เลข 5 หมายถึงอะไร",
+  "relevant": {
+   "number-5": 2
+  }
+ },
+ {
+  "question": "เลข 11 ต่างจากเลข 1 ยังไง",
+  "relevant": {
+   "number-11": 2,
+   "number-1": 1
+  }
+ },
+ {
+  "question": "ผลรวมชื่อได้เลข 62 ทำนายว่ายังไง",
+  "relevant": {
+   "number-62": 2
+  }
+ },
+ {
+  "question": "เลข 13 เป็นเลขร้ายจริงไหมในเลขศาสตร์ไทย",
+  "relevant": {
+   "number-13": 2
+  }
+ },
+ {
+  "question": "เลข 7 ดาวเสาร์มีอิทธิพลด้านไหนบ้าง",
+  "relevant": {
+   "number-7": 2
+  }
+ },
+ {
+  "question": "เลข 24 ดีไหม",
+  "relevant": {
+   "number-24": 2
+  }
+ },
+ {
+  "question": "เลข 36 บอกอะไรเกี่ยวกับดวงชะตา",
+  "relevant": {
+   "number-36": 2
+  }
+ },
+ {
+  "question": "เลข 8 ให้คุณให้โทษยังไง",
+  "relevant": {
+   "number-8": 2
+  }
+ },
+ {
+  "question": "ดวงจันทร์โคจรผ่านภพที่เกี่ยวกับความรักและคู่ครองหมายถึงอะไร",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  }
+ },
+ {
+  "question": "ช่วงที่เกี่ยวกับเรื่องเงินทองรายได้ ดวงจันทร์ผ่านภพไหน",
+  "relevant": {
+   "house-2": 2,
+   "house-11": 1
+  }
+ },
+ {
+  "question": "วันที่ดวงจันทร์ผ่านภพการงานอาชีพ ควรทำอะไร",
+  "relevant": {
+   "house-10": 2,
+   "house-6": 1
+  }
+ },
+ {
+  "question": "ดวงจันทร์ผ่านภพสุขภาพและตัวตน หมายถึงอะไร",
+  "relevant": {
+   "house-1": 2,
+   "house-6": 1
+  }
+ },
+ {
+  "question": "ภพที่เกี่ยวกับการเดินทางไกลและการศึกษาสูง",
+  "relevant": {
+   "house-9": 2,
+   "house-3": 1
+  }
+ },
+ {
+  "question": "ภพที่เกี่ยวกับครอบครัว บ้าน และที่อยู่อาศัย",
+  "relevant": {
+   "house-4": 2
+  }
+ },
+ {
+  "question": "ราศีตุลย์มีนิสัยเป็นยังไง",
+  "relevant": {
+   "zodiac-ตุลย์": 2
+  }
+ },
+ {
+  "question": "คนราศีมังกรเป็นคนแบบไหน",
+  "relevant": {
+   "zodiac-มกร": 2
+  }
+ },
+ {
+  "question": "ราศีเมษกับนิสัยการทำงาน",
+  "relevant": {
+   "zodiac-เมษ": 2
+  }
+ },
+ {
+  "question": "ราศีมีนเป็นคนอ่อนไหวไหม",
+  "relevant": {
+   "zodiac-มีน": 2
+  }
+ },
+ {
+  "question": "พระพิฆเนศเป็นเทพแห่งอะไร",
+  "relevant": {
+   "hindu-ganesha": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "เทพที่ให้โชคลาภและความมั่งคั่งคือองค์ไหน",
+  "relevant": {
+   "hindu-lakshmi": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "พระแม่กาลีมีความหมายอย่างไร",
+  "relevant": {
+   "hindu-kali": 2
+  }
+ },
+ {
+  "question": "เทพเจ้าฮินดูที่เกี่ยวกับความรู้และศิลปะ",
+  "relevant": {
+   "hindu-saraswati": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "ทักษาคืออะไร ใช้เช็คชื่อยังไง",
+  "relevant": {
+   "taksa-overview": 2
+  }
+ },
+ {
+  "question": "มุมสัมพันธ์ระหว่างดาว orb คืออะไร",
+  "relevant": {
+   "aspect-orb-and-thai-method": 2,
+   "aspect-overview": 1
+  }
+ },
+ {
+  "question": "สูตรทำผัดกะเพราหมูสับ",
+  "relevant": {}
+ },
+ {
+  "question": "วิธีเขียนโปรแกรม Python",
+  "relevant": {}
+ },
+ {
+  "question": "ราคาทองวันนี้เท่าไหร่",
+  "relevant": {}
+ },
+ {
+  "question": "ใครชนะฟุตบอลโลกปีที่แล้ว",
+  "relevant": {}
+ },
+ {
+  "question": "แนะนำร้านอาหารแถวสยาม",
+  "relevant": {}
+ },
+ {
+  "question": "ช่วงนี้เงินไม่ค่อยเข้าเลย ดวงเป็นยังไง",
+  "relevant": {
+   "house-2": 2,
+   "house-11": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "อยากรู้ว่าแฟนเก่าจะกลับมาไหม",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "งานช่วงนี้เครียดมาก จะดีขึ้นไหม",
+  "relevant": {
+   "house-10": 2,
+   "house-6": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "ไม่ค่อยสบายบ่อย ๆ ดวงสุขภาพเป็นไง",
+  "relevant": {
+   "house-1": 2,
+   "house-6": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "เลข 9 อะ ดีไหม",
+  "relevant": {
+   "number-9": 2
+  }
+ },
+ {
+  "question": "เลขสาม คืออะไร",
+  "relevant": {
+   "number-3": 2
+  }
+ },
+ {
+  "question": "เลข 21 โหดไหม",
+  "relevant": {
+   "number-21": 2
+  }
+ },
+ {
+  "question": "ชื่อผมรวมได้ 45 อะ แปลว่าไร",
+  "relevant": {
+   "number-45": 2
+  }
+ },
+ {
+  "question": "เลข 33 เป็นเลขพิเศษใช่ไหม",
+  "relevant": {
+   "number-33": 2
+  }
+ },
+ {
+  "question": "พิจิกเป็นคนยังไงอะ",
+  "relevant": {
+   "zodiac-พิจิก": 2
+  }
+ },
+ {
+  "question": "คนเกิดราศีกุมภ์ชอบอะไร",
+  "relevant": {
+   "zodiac-กุมภ์": 2
+  }
+ },
+ {
+  "question": "ราศีสิงห์กับเรื่องความรัก",
+  "relevant": {
+   "zodiac-สิงห์": 2
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "ราศีธนูนิสัยยังไง",
+  "relevant": {
+   "zodiac-ธนู": 2
+  }
+ },
+ {
+  "question": "พระศิวะคือใคร",
+  "relevant": {
+   "hindu-shiva": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "เทพองค์ไหนช่วยเรื่องอุปสรรค ขอพรก่อนเริ่มงานใหม่",
+  "relevant": {
+   "hindu-ganesha": 2
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "พระแม่ลักษมีให้พรอะไร",
+  "relevant": {
+   "hindu-lakshmi": 2
+  }
+ },
+ {
+  "question": "พระวิษณุ ผู้รักษาโลก คือใคร",
+  "relevant": {
+   "hindu-vishnu": 2
+  }
+ },
+ {
+  "question": "พระพรหมเป็นเทพผู้สร้างใช่ไหม",
+  "relevant": {
+   "hindu-brahma": 2
+  }
+ },
+ {
+  "question": "พระแม่อุมาปารวตีคือใคร",
+  "relevant": {
+   "hindu-parvati": 2
+  }
+ },
+ {
+  "question": "ทักษาวันเกิดวันอาทิตย์ ได้อะไรบ้าง",
+  "relevant": {
+   "taksa-day-0": 2,
+   "taksa-overview": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "ระบบทักษาไทยแบ่งเป็นอะไรบ้าง",
+  "relevant": {
+   "taksa-overview": 2
+  }
+ },
+ {
+  "question": "ดาวสองดวงทำมุมกันแล้วดีหรือร้าย",
+  "relevant": {
+   "aspect-overview": 2,
+   "aspect-orb-and-thai-method": 1
+  },
+  "note": "ควรตรวจ ground truth"
+ },
+ {
+  "question": "ภพที่ 8 หมายถึงอะไร",
+  "relevant": {
+   "house-8": 2
+  }
+ },
+ {
+  "question": "ภพลาภะคือเรื่องอะไร",
+  "relevant": {
+   "house-11": 2
+  }
+ },
+ {
+  "question": "ภพวินาศ ต้องระวังเรื่องอะไร",
+  "relevant": {
+   "house-12": 2
+  }
+ },
+ {
+  "question": "ภพบุตรคือภพไหน",
+  "relevant": {
+   "house-5": 2
+  }
+ },
+ {
+  "question": "วิธีทำแกงเขียวหวาน",
+  "relevant": {}
+ },
+ {
+  "question": "แก้บั๊ก Flutter overflow ยังไง",
+  "relevant": {}
+ },
+ {
+  "question": "พยากรณ์อากาศพรุ่งนี้",
+  "relevant": {}
+ },
+ {
+  "question": "ราคาบิตคอยน์ตอนนี้",
+  "relevant": {}
+ },
+ {
+  "question": "แนะนำหนังสนุก ๆ หน่อย",
+  "relevant": {}
+ },
+ {
+  "question": "เงินเดือนโปรแกรมเมอร์เท่าไหร่",
+  "relevant": {}
+ },
+ {
+  "question": "ตารางสอบมหาวิทยาลัย",
+  "relevant": {}
+ },
+ {
+  "question": "สอนว่ายน้ำหน่อย",
+  "relevant": {}
+ },
+ {
+  "question": "เลขหวยงวดนี้ออกอะไร",
+  "relevant": {}
+ },
+ {
+  "question": "ซื้อหุ้นตัวไหนดี",
+  "relevant": {}
+ },
+ {
+  "question": "วิธีลดน้ำหนักเร็ว ๆ",
+  "relevant": {}
+ },
+ {
+  "question": "เมืองหลวงของฝรั่งเศสคืออะไร",
+  "relevant": {}
+ },
+ {
+  "question": "สมการกำลังสองแก้ยังไง",
+  "relevant": {}
+ },
+ {
+  "question": "ช่วยแปลประโยคเป็นภาษาอังกฤษ",
+  "relevant": {}
+ },
+ {
+  "question": "ซ่อมแอร์รถยนต์เองได้ไหม",
+  "relevant": {}
+ },
+ {
+  "question": "เลิกกับแฟนมาสองเดือน เขาจะง้อไหม",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ },
+ {
+  "question": "ช่วงไหนจะได้เจอคนที่ใช่",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ },
+ {
+  "question": "คนที่คุยอยู่จะจริงจังกับเราไหม",
+  "relevant": {
+   "house-5": 2,
+   "house-7": 2
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ },
+ {
+  "question": "ตอนนี้โสดอยู่ จะมีใครเข้ามาไหม",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ },
+ {
+  "question": "ทะเลาะกับสามีบ่อย ความสัมพันธ์จะดีขึ้นไหม",
+  "relevant": {
+   "house-7": 2
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ },
+ {
+  "question": "อยากลาออกไปหาที่ใหม่ ควรไหม",
+  "relevant": {
+   "house-10": 2,
+   "house-6": 1
+  },
+  "note": "held-out: ไม่ได้ใช้เขียน search_hint"
+ }
+]

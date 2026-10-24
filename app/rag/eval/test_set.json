@@ -1,0 +1,22 @@
+[
+  {"question": "เลข 5 หมายถึงอะไร", "expected_chunk_id": "number-5"},
+  {"question": "เลข 8 มีความหมายว่ายังไง", "expected_chunk_id": "number-8"},
+  {"question": "อยากรู้ว่าเลข 12 ให้โทษด้านไหนบ้าง", "expected_chunk_id": "number-12"},
+  {"question": "เลข 9 ดาวเกตุเกี่ยวข้องกับอะไร", "expected_chunk_id": "number-9"},
+  {"question": "ชื่อที่มีผลรวมเลข 15 ดีหรือไม่ดี", "expected_chunk_id": "number-15"},
+  {"question": "เลข 21 บ่งบอกลักษณะนิสัยแบบไหน", "expected_chunk_id": "number-21"},
+  {"question": "ดาวอังคารตรงกับเลขอะไร", "expected_chunk_id": "number-3"},
+  {"question": "เลข 0 ดาวมฤตยูส่งผลยังไงกับชีวิต", "expected_chunk_id": "number-0"},
+  {"question": "เลข 33 เป็นเลขมงคลไหม", "expected_chunk_id": "number-33"},
+  {"question": "อยากทราบความหมายของเลข 41", "expected_chunk_id": "number-41"},
+  {"question": "เลข 7 ดาวเสาร์มีอิทธิพลด้านไหนบ้าง", "expected_chunk_id": "number-7"},
+  {"question": "เลข 56 หมายถึงอะไรในเลขศาสตร์", "expected_chunk_id": "number-56"},
+  {"question": "ผลรวมชื่อได้เลข 62 ทำนายว่ายังไง", "expected_chunk_id": "number-62"},
+  {"question": "เลข 2 ดาวจันทร์เกี่ยวข้องกับธาตุอะไร", "expected_chunk_id": "number-2"},
+  {"question": "เลข 18 ส่งผลด้านไหนต่อชีวิตคนที่มีเลขนี้", "expected_chunk_id": "number-18"},
+  {"question": "เลข 11 ต่างจากเลข 1 ยังไง", "expected_chunk_id": "number-11"},
+  {"question": "อยากเปลี่ยนชื่อให้ได้เลข 24 ดีไหม", "expected_chunk_id": "number-24"},
+  {"question": "เลข 13 เป็นเลขร้ายจริงไหมในเลขศาสตร์ไทย", "expected_chunk_id": "number-13"},
+  {"question": "เลข 36 บอกอะไรเกี่ยวกับดวงชะตา", "expected_chunk_id": "number-36"},
+  {"question": "เลข 4 ดาวพุธมีความหมายแทนอะไร", "expected_chunk_id": "number-4"}
+]

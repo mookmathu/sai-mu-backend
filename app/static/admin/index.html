@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>แผงจัดการเนื้อหา — Sai Mu</title>
+<style>
+  :root {
+    --page-bg: #F6A7C0;
+    --card-bg: #FCE4EC;
+    --surface: #FFF7F8;
+    --primary: #D97A93;
+    --primary-dark: #7A2E42;
+    --text-primary: #2B2226;
+    --text-secondary: #9B8A8E;
+    --border: #EFE3E5;
+    --white: #FFFFFF;
+    --danger: #C0392B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Sarabun", sans-serif;
+    background: var(--page-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+  header {
+    padding: 20px 24px 8px;
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    color: var(--primary-dark);
+  }
+  header p {
+    margin: 0;
+    color: #6b4a55;
+    font-size: 13px;
+  }
+  .shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+  .section-title {
+    grid-column: 1 / -1;
+    margin: 10px 0 0;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 14px;
+  }
+  .hint { color: var(--text-secondary); font-size: 12px; margin-top: 3px; line-height: 1.5; }
+  .chk { display: inline-block; margin-right: 6px; font-size: 12px; color: var(--text-secondary); }
+  .chk.on { color: #2e7d32; font-weight: 600; }
+  .rep-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+  .rep-row {
+    display: grid;
+    grid-template-columns: 28px 170px 1fr auto;
+    gap: 8px;
+    align-items: start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .rep-row.chant-row { grid-template-columns: 28px 1fr auto; }
+  .rep-fields { display: flex; flex-direction: column; gap: 6px; }
+  .rep-fields textarea { min-height: 110px; line-height: 1.7; }
+  .rep-row.no-num { grid-template-columns: 170px 1fr auto; }
+  .rep-row textarea { min-height: 56px; resize: vertical; }
+  .rep-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--primary-dark); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; margin-top: 5px;
+  }
+  .rep-btns { display: flex; gap: 4px; }
+  .rep-btns button { padding: 6px 9px; font-size: 13px; }
+  .rep-empty { color: var(--text-secondary); font-size: 13px; padding: 6px 2px; }
+  @media (max-width: 640px) {
+    .rep-row, .rep-row.no-num, .rep-row.chant-row { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .connect-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .connect-row input {
+    flex: 1;
+    min-width: 160px;
+  }
+  input, select, textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--text-primary);
+  }
+  textarea { resize: vertical; min-height: 60px; width: 100%; }
+  label { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+  .field { margin-bottom: 10px; }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--primary-dark); color: var(--white); }
+  .btn-secondary { background: var(--white); color: var(--primary-dark); border: 1px solid var(--primary); }
+  .btn-danger { background: var(--white); color: var(--danger); border: 1px solid var(--danger); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status-ok { color: #2e7d32; font-size: 13px; }
+  .status-bad { color: var(--danger); font-size: 13px; }
+  .tabs { display: flex; gap: 8px; margin-top: 20px; }
+  .tab-btn {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border-radius: 999px 999px 0 0;
+    padding: 10px 18px;
+  }
+  .tab-btn.active { background: var(--card-bg); color: var(--primary-dark); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-secondary); font-weight: 600; }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 6px; vertical-align: -2px; border: 1px solid rgba(0,0,0,0.15); }
+  .row-actions { white-space: nowrap; }
+  .row-actions button { padding: 5px 12px; font-size: 12px; margin-right: 4px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-actions { margin-top: 12px; display: flex; gap: 8px; }
+  .empty-note { color: var(--text-secondary); font-size: 13px; padding: 12px 0; }
+  .muted { color: var(--text-secondary); font-size: 12px; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; }
+  .checkbox-row input { width: auto; }
+  #globalMessage { margin-top: 10px; font-size: 13px; }
+  @media (max-width: 560px) {
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>แผงจัดการเนื้อหา — Sai Mu</h1>
+  <p>จัดการ "สีมงคลประจำวัน" "สถานที่สิ่งศักดิ์สิทธิ์" และ "บทความองค์เทพ" ที่ใช้ในแอป ไม่ต้องแก้โค้ด</p>
+</header>
+
+<div class="shell">
+
+  <div class="card">
+    <div class="connect-row">
+      <div style="flex:2; min-width:200px;">
+        <label for="apiBase">ที่อยู่ backend (API base URL)</label>
+        <input id="apiBase" type="text" placeholder="เช่น http://localhost:8000" />
+      </div>
+      <div style="flex:1; min-width:160px;">
+        <label for="adminKey">Admin Key</label>
+        <input id="adminKey" type="password" placeholder="ค่าเดียวกับ ADMIN_API_KEY ใน .env" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button class="btn-primary" onclick="connectAndLoad()">เชื่อมต่อ</button>
+      </div>
+    </div>
+    <div id="connStatus" class="muted" style="margin-top:8px;">ยังไม่ได้เชื่อมต่อ</div>
+    <div id="globalMessage"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtn-shirt" onclick="switchTab('shirt')">สีมงคลประจำวัน</button>
+    <button class="tab-btn" id="tabBtn-place" onclick="switchTab('place')">สถานที่ศักดิ์สิทธิ์</button>
+    <button class="tab-btn" id="tabBtn-article" onclick="switchTab('article')">บทความองค์เทพ</button>
+  </div>
+
+  <!-- ===================== สีมงคลประจำวัน (หลักจีน) ===================== -->
+  <div class="card" id="tab-shirt">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div>
+        <strong>สีมงคลประจำวัน (ตามหลักจีน)</strong>
+        <div class="muted">ผูกกับปี/เดือน/วันที่จริง — กรอกใหม่ทุกเดือนตามตารางต้นฉบับ</div>
+      </div>
+      <button class="btn-primary" onclick="openDailyColorForm()">+ เพิ่มวันใหม่</button>
+    </div>
+
+    <div id="shirtFormWrap" style="display:none; margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+      <input type="hidden" id="shirtId" />
+      <div class="form-grid">
+        <div class="field">
+          <label for="shirtYear">ปี (ค.ศ.)</label>
+          <input id="shirtYear" type="number" oninput="updateWeekdayPreview()" />
+        </div>
+        <div class="field">
+          <label for="shirtMonth">เดือน</label>
+          <select id="shirtMonth" onchange="updateWeekdayPreview()">
+            <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+            <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+            <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+            <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+            <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+            <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="shirtDayOfMonth">วันที่</label>
+          <input id="shirtDayOfMonth" type="number" min="1" max="31" oninput="updateWeekdayPreview()" />
+        </div>
+        <div class="field">
+          <label for="shirtWeekdayPreview">วันในสัปดาห์ (คำนวณอัตโนมัติ)</label>
+          <input id="shirtWeekdayPreview" type="text" disabled />
+        </div>
+        <div class="field">
+          <label for="shirtElement">ธาตุ</label>
+          <input id="shirtElement" type="text" placeholder="เช่น ดิน หยาง" />
+        </div>
+        <div class="field">
+          <label for="shirtSource">ที่มาของข้อมูล (ไม่บังคับ)</label>
+          <input id="shirtSource" type="text" placeholder="เช่น cr. PasutAstro" />
+        </div>
+        <div class="field full">
+          <label for="shirtHelpColors">ได้รับความช่วยเหลือ</label>
+          <input id="shirtHelpColors" type="text" placeholder="เช่น ดำ, น้ำเงินเข้ม" />
+        </div>
+        <div class="field full">
+          <label for="shirtLoveColors">ส่งเสริมความรัก มิตรภาพ</label>
+          <input id="shirtLoveColors" type="text" placeholder="เช่น น้ำตาล, ครีม" />
+        </div>
+        <div class="field full">
+          <label for="shirtLuckColors">ให้โชคลาภความสำเร็จ</label>
+          <input id="shirtLuckColors" type="text" placeholder="เช่น ทอง, สีเงิน" />
+        </div>
+        <div class="field full">
+          <label for="shirtProblemColors">ปัญหาและอุปสรรค (สีที่ควรเลี่ยง)</label>
+          <input id="shirtProblemColors" type="text" placeholder="เช่น เขียวเข้ม, ดำ** (ใส่ ** ต่อท้ายถ้าต้องระวังเป็นพิเศษ)" />
+        </div>
+        <div class="field full">
+          <label for="shirtZodiacNote">ภาคกิจกรรม/กลุ่มปีนักษัตรที่เกี่ยวข้อง (ไม่บังคับ)</label>
+          <input id="shirtZodiacNote" type="text" placeholder="เช่น ต๊, มะเส็ง" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveDailyColor()">บันทึก</button>
+        <button class="btn-secondary" onclick="closeShirtForm()">ยกเลิก</button>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table id="shirtTable" style="display:none; min-width:720px;">
+        <thead>
+          <tr>
+            <th>วันที่</th><th>ธาตุ</th><th>ช่วยเหลือ</th><th>ความรัก</th>
+            <th>โชคลาภ</th><th>ปัญหา</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="shirtTableBody"></tbody>
+      </table>
+    </div>
+    <div id="shirtEmptyNote" class="empty-note">ยังไม่มีข้อมูล — กด "เชื่อมต่อ" ด้านบนก่อน หรือเพิ่มวันใหม่</div>
+  </div>
+
+  <!-- ===================== สถานที่ศักดิ์สิทธิ์ ===================== -->
+  <div class="card" id="tab-place" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong>รายการสถานที่สิ่งศักดิ์สิทธิ์</strong>
+      <button class="btn-primary" onclick="openPlaceForm()">+ เพิ่มรายการใหม่</button>
+    </div>
+
+    <div id="placeFormWrap" style="display:none; margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+      <input type="hidden" id="placeId" />
+      <div class="form-grid">
+        <div class="field full">
+          <label for="placeName">ชื่อสถานที่</label>
+          <input id="placeName" type="text" placeholder="เช่น ศาลพระพรหมเอราวัณ" />
+        </div>
+        <div class="field">
+          <label for="placeCategory">ประเภท</label>
+          <input id="placeCategory" type="text" list="categoryList" placeholder="วัด / ศาลเจ้า / เทวสถาน" />
+          <datalist id="categoryList">
+            <option value="วัด"></option>
+            <option value="ศาลเจ้า"></option>
+            <option value="เทวสถาน"></option>
+            <option value="ศาล"></option>
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="placeHighlight">จุดเด่น/สิ่งศักดิ์สิทธิ์</label>
+          <input id="placeHighlight" type="text" placeholder="เช่น พระพรหมเอราวัณ" />
+        </div>
+        <div class="field">
+          <label for="placeProvince">จังหวัด</label>
+          <input id="placeProvince" type="text" value="กรุงเทพมหานคร" />
+        </div>
+        <div class="field">
+          <label for="placeDistrict">เขต/อำเภอ</label>
+          <input id="placeDistrict" type="text" placeholder="เช่น ปทุมวัน" />
+        </div>
+        <div class="field">
+          <label for="placeLat">ละติจูด (ไม่บังคับ)</label>
+          <input id="placeLat" type="number" step="any" />
+        </div>
+        <div class="field">
+          <label for="placeLng">ลองจิจูด (ไม่บังคับ)</label>
+          <input id="placeLng" type="number" step="any" />
+        </div>
+        <div class="field full">
+          <label for="placeImageUrl">ลิงก์รูปภาพ (ไม่บังคับ)</label>
+          <input id="placeImageUrl" type="text" placeholder="https://..." />
+        </div>
+        <div class="field full">
+          <label for="placeDesc">คำอธิบาย / ประวัติ</label>
+          <textarea id="placeDesc" placeholder="ประวัติและจุดเด่นของสถานที่"></textarea>
+        </div>
+        <div class="field full">
+          <label for="placeWishTags">ขอพรเรื่อง (คั่นด้วยจุลภาค)</label>
+          <input id="placeWishTags" type="text" placeholder="เช่น ความรัก, การงาน, โชคลาภ" />
+        </div>
+
+        <div class="section-title">🚗 วิธีการเดินทาง</div>
+        <div class="field full">
+          <label>วิธีเดินทาง (กดปุ่มเพื่อเพิ่มทีละวิธี)</label>
+          <div id="travelList" class="rep-list"></div>
+          <div><button type="button" class="btn-secondary" onclick="addTravelRow()">+ เพิ่มวิธีเดินทาง</button></div>
+          <datalist id="travelTypeList">
+            <option value="รถไฟฟ้า"></option>
+            <option value="รถเมล์"></option>
+            <option value="รถยนต์ / ที่จอดรถ"></option>
+            <option value="เรือ"></option>
+            <option value="เดินเท้า"></option>
+            <option value="แท็กซี่ / แอปเรียกรถ"></option>
+          </datalist>
+          <div class="hint">เลือกประเภทจากรายการหรือพิมพ์เอง แล้วใส่รายละเอียด เช่น สถานี ทางออก สายรถเมล์ ที่จอดรถ</div>
+        </div>
+
+        <div class="section-title">🙏 ลำดับการไหว้ / สักการะ</div>
+        <div class="field full">
+          <label>ขั้นตอนการไหว้ (เรียงตามลำดับ กดปุ่มเพื่อเพิ่มทีละขั้น)</label>
+          <div id="worshipList" class="rep-list"></div>
+          <div><button type="button" class="btn-secondary" onclick="addWorshipRow()">+ เพิ่มขั้นตอน</button></div>
+          <div class="hint">ใส่ชื่อขั้นตอนและรายละเอียด ใช้ปุ่ม ▲ ▼ เปลี่ยนลำดับ แอปจะแสดงเลข 1, 2, 3 ... ให้เอง ควรกรอกจากแหล่งที่เชื่อถือได้และระบุในช่อง "ที่มาของข้อมูล"</div>
+        </div>
+        <div class="field full">
+          <label for="placeOfferings">ของไหว้ / ของถวาย</label>
+          <textarea id="placeOfferings" rows="4" placeholder="ธูป 9 ดอก&#10;พวงมาลัย&#10;ดอกไม้"></textarea>
+          <div class="hint">1 บรรทัด = 1 อย่าง</div>
+        </div>
+
+        <div class="section-title">📿 บทสวด / คาถา</div>
+        <div class="field full">
+          <label>บทสวดประจำสถานที่ (กดปุ่มเพื่อเพิ่มทีละบท)</label>
+          <div id="chantList" class="rep-list"></div>
+          <div><button type="button" class="btn-secondary" onclick="addChantRow()">+ เพิ่มบทสวด</button></div>
+          <div class="hint">ใส่ชื่อบทสวด ตัวบท และหมายเหตุ เช่น "สวด 3 จบ" <b>เว้นบรรทัดว่าง 1 บรรทัดเพื่อแบ่งเป็นช่วง ๆ</b> (หรือขึ้นบรรทัดใหม่ด้วยการย่อหน้า) แอปจะแสดงแต่ละช่วงเป็นกล่องแยกให้อ่านง่าย ควรคัดลอกจากแหล่งที่เชื่อถือได้ (เช่น ป้ายของสถานที่หรือเอกสารของวัด) และระบุในช่อง "ที่มาของข้อมูล"</div>
+        </div>
+
+        <div class="section-title">ℹ️ ข้อมูลที่ควรรู้</div>
+        <div class="field">
+          <label for="placeHours">วัน-เวลาเปิด</label>
+          <input id="placeHours" type="text" placeholder="เช่น ทุกวัน 06:00-18:00" />
+        </div>
+        <div class="field">
+          <label for="placeBestTime">ช่วงเวลาที่นิยมไป</label>
+          <input id="placeBestTime" type="text" placeholder="เช่น ช่วงเช้า / วันพฤหัสบดี" />
+        </div>
+        <div class="field full">
+          <label for="placeEtiquette">ข้อควรปฏิบัติ / การแต่งกาย</label>
+          <textarea id="placeEtiquette" rows="4" placeholder="แต่งกายสุภาพ&#10;ไม่ส่งเสียงดัง"></textarea>
+          <div class="hint">1 บรรทัด = 1 ข้อ</div>
+        </div>
+
+        <div class="section-title">📎 ที่มา</div>
+        <div class="field full">
+          <label for="placeSource">ที่มาของข้อมูล (ไม่บังคับ แต่แนะนำให้กรอก)</label>
+          <textarea id="placeSource" placeholder="อ้างอิงข้อมูลจากไหน เช่น เว็บไซต์/หนังสือ/การสอบถามผู้ดูแลสถานที่"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="savePlace()">บันทึก</button>
+        <button class="btn-secondary" onclick="closePlaceForm()">ยกเลิก</button>
+      </div>
+    </div>
+
+    <table id="placeTable" style="display:none;">
+      <thead>
+        <tr><th>ชื่อ</th><th>ประเภท</th><th>พื้นที่</th><th>ข้อมูลที่กรอกแล้ว</th><th></th></tr>
+      </thead>
+      <tbody id="placeTableBody"></tbody>
+    </table>
+    <div id="placeEmptyNote" class="empty-note">ยังไม่มีข้อมูล — กด "เชื่อมต่อ" ด้านบนก่อน หรือเพิ่มรายการใหม่</div>
+  </div>
+
+  <!-- ===================== บทความองค์เทพ ===================== -->
+  <div class="card" id="tab-article" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div>
+        <strong>บทความองค์เทพ (คลังบทความ)</strong>
+        <div class="muted">บทความที่เพิ่มที่นี่จะไปรวมกับบทความที่มีในแอปอยู่แล้ว ติ๊ก "เผยแพร่" เมื่อพร้อมให้ผู้ใช้เห็น</div>
+      </div>
+      <button class="btn-primary" onclick="openArticleForm()">+ เพิ่มบทความใหม่</button>
+    </div>
+
+    <div id="articleFormWrap" style="display:none; margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+      <input type="hidden" id="articleId" />
+      <div class="form-grid">
+        <div class="field full">
+          <label for="articleTitle">ชื่อองค์เทพ (ภาษาไทย)</label>
+          <input id="articleTitle" type="text" placeholder="เช่น พระแม่คงคา" />
+        </div>
+        <div class="field">
+          <label for="articleSlug">รหัสบทความ (ภาษาอังกฤษตัวเล็ก ห้ามซ้ำ)</label>
+          <input id="articleSlug" type="text" placeholder="เช่น hindu-ganga" />
+          <div class="hint">ใช้ a-z 0-9 และ - เท่านั้น ตั้งแล้วไม่ควรเปลี่ยน เพราะรายการโปรดของผู้ใช้อ้างอิงรหัสนี้</div>
+        </div>
+        <div class="field">
+          <label for="articleSubtitle">ชื่อสากล • บทบาทสั้น ๆ</label>
+          <input id="articleSubtitle" type="text" placeholder="เช่น Ganga Devi • เทวีแห่งสายน้ำศักดิ์สิทธิ์" />
+          <div class="hint">คั่นด้วยเครื่องหมาย • ส่วนหน้าเป็นชื่อสากล ส่วนหลังเป็นบทบาท</div>
+        </div>
+        <div class="field full">
+          <label for="articleSummary">สรุปสั้น (แสดงในรายการและการ์ดหน้าแรก)</label>
+          <textarea id="articleSummary" rows="2" placeholder="1-2 ประโยค"></textarea>
+        </div>
+        <div class="field full">
+          <label>หัวข้อ (เลือกได้หลายอัน ใช้กรองในคลังบทความ)</label>
+          <div id="articleTopics">
+            <label class="chk"><input type="checkbox" value="wisdom" /> ปัญญา &amp; การเรียน</label>
+            <label class="chk"><input type="checkbox" value="wealth" /> เงิน &amp; โชคลาภ</label>
+            <label class="chk"><input type="checkbox" value="love" /> ความรัก</label>
+            <label class="chk"><input type="checkbox" value="success" /> ความสำเร็จ</label>
+            <label class="chk"><input type="checkbox" value="protection" /> ปกป้อง &amp; ความมั่นคง</label>
+            <label class="chk"><input type="checkbox" value="change" /> การเปลี่ยนแปลง</label>
+          </div>
+        </div>
+        <div class="field full">
+          <label for="articleImageUrl">ลิงก์รูปภาพ (ไม่บังคับ)</label>
+          <input id="articleImageUrl" type="text" placeholder="https://..." />
+          <div class="hint">ไม่ใส่ = แอปจะใช้ไอคอนแทน ควรใช้รูปที่มีสิทธิ์นำมาใช้เท่านั้น</div>
+        </div>
+
+        <div class="section-title">📖 เนื้อหา</div>
+        <div class="field full">
+          <label>หัวข้อและเนื้อหา (เรียงตามลำดับ กดปุ่มเพื่อเพิ่มทีละหัวข้อ)</label>
+          <div id="articleSectionList" class="rep-list"></div>
+          <div><button type="button" class="btn-secondary" onclick="addArticleSectionRow()">+ เพิ่มหัวข้อ</button></div>
+          <div class="hint">เช่น "ความเป็นมา" "สัญลักษณ์ที่พบบ่อย" "แนวทางการจัดของไหว้" เขียนเฉพาะสิ่งที่มีแหล่งอ้างอิงรองรับ</div>
+        </div>
+
+        <div class="section-title">📿 บทสวด (ไม่บังคับ)</div>
+        <div class="field full">
+          <label for="articleMantra">บทสวดสั้น</label>
+          <input id="articleMantra" type="text" placeholder="ใส่เมื่อมีแหล่งอ้างอิงเท่านั้น เว้นว่างได้" />
+          <div class="hint">ถ้าเว้นว่าง แอปจะไม่แสดงการ์ดบทสวดและปุ่มนับบทสวดของบทความนี้</div>
+        </div>
+        <div class="field full">
+          <label for="articleMantraNote">หมายเหตุบทสวด</label>
+          <input id="articleMantraNote" type="text" placeholder="เช่น สวด 3 จบ" />
+        </div>
+
+        <div class="section-title">📎 ที่มา และการเผยแพร่</div>
+        <div class="field full">
+          <label for="articleSource">ที่มาของข้อมูล (แนะนำให้กรอก เก็บไว้ฝั่งแอดมิน ไม่แสดงในแอป)</label>
+          <textarea id="articleSource" placeholder="ลิงก์/ชื่อหนังสือที่ใช้อ้างอิง"></textarea>
+        </div>
+        <div class="field">
+          <label for="articleSort">ลำดับ (เลขน้อยขึ้นก่อน)</label>
+          <input id="articleSort" type="number" value="0" />
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <div class="checkbox-row"><input id="articlePublished" type="checkbox" checked /> <span>เผยแพร่ให้ผู้ใช้เห็น</span></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveArticle()">บันทึก</button>
+        <button class="btn-secondary" onclick="closeArticleForm()">ยกเลิก</button>
+      </div>
+    </div>
+
+    <table id="articleTable" style="display:none;">
+      <thead>
+        <tr><th>ชื่อ</th><th>รหัส</th><th>สถานะ</th><th>ข้อมูลที่กรอกแล้ว</th><th></th></tr>
+      </thead>
+      <tbody id="articleTableBody"></tbody>
+    </table>
+    <div id="articleEmptyNote" class="empty-note">ยังไม่มีบทความที่เพิ่มผ่านแอดมิน — กด "เชื่อมต่อ" ด้านบนก่อน หรือเพิ่มบทความใหม่</div>
+  </div>
+
+</div>
+
+<script>
+  // ---------- การเชื่อมต่อ ----------
+  // เก็บ API base URL + Admin Key ไว้ใน localStorage ของเบราว์เซอร์นี้เท่านั้น
+  // (ไม่ได้ส่งไปที่ไหนอื่นนอกจาก backend ที่ระบุเอง) สะดวกไม่ต้องกรอกใหม่ทุกครั้ง
+  function loadConnection() {
+    document.getElementById('apiBase').value = localStorage.getItem('saiMuAdminApiBase') || window.location.origin;
+    document.getElementById('adminKey').value = localStorage.getItem('saiMuAdminKey') || '';
+  }
+
+  function apiBase() { return document.getElementById('apiBase').value.replace(/\/+$/, ''); }
+  function adminKey() { return document.getElementById('adminKey').value; }
+
+  function showMessage(text, isError) {
+    const el = document.getElementById('globalMessage');
+    el.textContent = text;
+    el.className = isError ? 'status-bad' : 'status-ok';
+    if (!isError) setTimeout(() => { if (el.textContent === text) el.textContent = ''; }, 3000);
+  }
+
+  async function apiFetch(path, options) {
+    options = options || {};
+    options.headers = Object.assign(
+      { 'X-Admin-Key': adminKey(), 'Content-Type': 'application/json' },
+      options.headers || {}
+    );
+    const res = await fetch(apiBase() + path, options);
+    if (res.status === 401) {
+      throw new Error('Admin Key ไม่ถูกต้อง — เช็คว่าตรงกับ ADMIN_API_KEY ใน .env ของ backend ไหม');
+    }
+    if (!res.ok) {
+      let detail = res.statusText;
+      try { const body = await res.json(); detail = body.detail || detail; } catch (e) {}
+      throw new Error('เกิดข้อผิดพลาด (' + res.status + '): ' + detail);
+    }
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  async function connectAndLoad() {
+    localStorage.setItem('saiMuAdminApiBase', apiBase());
+    localStorage.setItem('saiMuAdminKey', adminKey());
+    const statusEl = document.getElementById('connStatus');
+    statusEl.textContent = 'กำลังเชื่อมต่อ...';
+    statusEl.className = 'muted';
+    try {
+      await Promise.all([loadDailyColors(), loadPlaces(), loadArticles()]);
+      statusEl.textContent = 'เชื่อมต่อสำเร็จ ✓ (' + apiBase() + ')';
+      statusEl.className = 'status-ok';
+    } catch (e) {
+      statusEl.textContent = 'เชื่อมต่อไม่สำเร็จ: ' + e.message;
+      statusEl.className = 'status-bad';
+    }
+  }
+
+  // ---------- แท็บ ----------
+  function switchTab(name) {
+    document.getElementById('tab-shirt').style.display = name === 'shirt' ? 'block' : 'none';
+    document.getElementById('tab-place').style.display = name === 'place' ? 'block' : 'none';
+    document.getElementById('tab-article').style.display = name === 'article' ? 'block' : 'none';
+    document.getElementById('tabBtn-article').classList.toggle('active', name === 'article');
+    document.getElementById('tabBtn-shirt').classList.toggle('active', name === 'shirt');
+    document.getElementById('tabBtn-place').classList.toggle('active', name === 'place');
+  }
+
+  // ---------- สีมงคลประจำวัน (หลักจีน) ----------
+  const THAI_WEEKDAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+  let _dailyColorItemsCache = [];
+
+  // คำนวณวันในสัปดาห์จริงจากปี/เดือน/วันที่ (ไม่ได้เก็บในฐานข้อมูล คำนวณสดตรงนี้)
+  // ถ้าวันที่ไม่มีจริงในเดือนนั้น (เช่น 30 ก.พ.) JS Date จะ "ล้น" ไปเดือนถัดไปเอง
+  // เราตรวจจับ overflow นี้แล้วเตือนแทนที่จะโชว์วันผิดๆ เงียบๆ
+  function computeThaiWeekday(year, month, day) {
+    if (!year || !month || !day) return '';
+    const d = new Date(year, month - 1, day);
+    if (d.getMonth() !== month - 1) return '⚠️ วันที่นี้ไม่มีจริงในเดือนนี้';
+    return THAI_WEEKDAYS[d.getDay()];
+  }
+
+  function updateWeekdayPreview() {
+    const y = parseInt(document.getElementById('shirtYear').value, 10);
+    const m = parseInt(document.getElementById('shirtMonth').value, 10);
+    const d = parseInt(document.getElementById('shirtDayOfMonth').value, 10);
+    document.getElementById('shirtWeekdayPreview').value = computeThaiWeekday(y, m, d);
+  }
+
+  function openDailyColorForm(item) {
+    document.getElementById('shirtFormWrap').style.display = 'block';
+    document.getElementById('shirtId').value = item ? item.id : '';
+
+    if (item) {
+      document.getElementById('shirtYear').value = item.year;
+      document.getElementById('shirtMonth').value = item.month;
+      document.getElementById('shirtDayOfMonth').value = item.day_of_month;
+    } else {
+      // เพิ่มรายการใหม่: เดาปี/เดือน/วันที่ถัดไปจากแถวล่าสุดที่มี ให้กรอกต่อเนื่อง
+      // ได้เร็วขึ้น (ปกติจะกรอกทีละเดือน ~28-31 วันติดกัน) ถ้ายังไม่มีข้อมูลเลย
+      // ใช้ปี/เดือนปัจจุบันแทน
+      const last = _dailyColorItemsCache[_dailyColorItemsCache.length - 1];
+      const now = new Date();
+      if (last) {
+        document.getElementById('shirtYear').value = last.year;
+        document.getElementById('shirtMonth').value = last.month;
+        document.getElementById('shirtDayOfMonth').value = last.day_of_month < 31 ? last.day_of_month + 1 : 1;
+      } else {
+        document.getElementById('shirtYear').value = now.getFullYear();
+        document.getElementById('shirtMonth').value = now.getMonth() + 1;
+        document.getElementById('shirtDayOfMonth').value = 1;
+      }
+    }
+    document.getElementById('shirtElement').value = item ? (item.element_name || '') : '';
+    document.getElementById('shirtSource').value = item ? (item.source_note || '') : '';
+    document.getElementById('shirtHelpColors').value = item ? (item.help_colors || '') : '';
+    document.getElementById('shirtLoveColors').value = item ? (item.love_colors || '') : '';
+    document.getElementById('shirtLuckColors').value = item ? (item.luck_colors || '') : '';
+    document.getElementById('shirtProblemColors').value = item ? (item.problem_colors || '') : '';
+    document.getElementById('shirtZodiacNote').value = item ? (item.zodiac_note || '') : '';
+    updateWeekdayPreview();
+  }
+  function closeShirtForm() { document.getElementById('shirtFormWrap').style.display = 'none'; }
+
+  async function saveDailyColor() {
+    const id = document.getElementById('shirtId').value;
+    const payload = {
+      year: parseInt(document.getElementById('shirtYear').value, 10),
+      month: parseInt(document.getElementById('shirtMonth').value, 10),
+      day_of_month: parseInt(document.getElementById('shirtDayOfMonth').value, 10),
+      element_name: document.getElementById('shirtElement').value.trim() || null,
+      source_note: document.getElementById('shirtSource').value.trim() || null,
+      help_colors: document.getElementById('shirtHelpColors').value.trim() || null,
+      love_colors: document.getElementById('shirtLoveColors').value.trim() || null,
+      luck_colors: document.getElementById('shirtLuckColors').value.trim() || null,
+      problem_colors: document.getElementById('shirtProblemColors').value.trim() || null,
+      zodiac_note: document.getElementById('shirtZodiacNote').value.trim() || null,
+    };
+    if (!payload.year || !payload.month || !payload.day_of_month) {
+      showMessage('กรุณากรอกปี เดือน และวันที่ให้ครบ', true);
+      return;
+    }
+    try {
+      if (id) {
+        await apiFetch('/admin/content/daily-colors/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+        showMessage('แก้ไขแล้ว');
+      } else {
+        await apiFetch('/admin/content/daily-colors', { method: 'POST', body: JSON.stringify(payload) });
+        showMessage('เพิ่มรายการแล้ว');
+      }
+      closeShirtForm();
+      await loadDailyColors();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function deleteDailyColor(id) {
+    if (!confirm('ลบรายการนี้เลยไหม? กู้คืนไม่ได้นะคะ')) return;
+    try {
+      await apiFetch('/admin/content/daily-colors/' + id, { method: 'DELETE' });
+      showMessage('ลบแล้ว');
+      await loadDailyColors();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function loadDailyColors() {
+    const items = await apiFetch('/admin/content/daily-colors');
+    _dailyColorItemsCache = items;
+    const body = document.getElementById('shirtTableBody');
+    const table = document.getElementById('shirtTable');
+    const empty = document.getElementById('shirtEmptyNote');
+    body.innerHTML = '';
+    if (!items.length) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    table.style.display = 'table';
+    empty.style.display = 'none';
+    for (const item of items) {
+      const weekday = computeThaiWeekday(item.year, item.month, item.day_of_month);
+      const dateLabel = formatMonthDay(item.month, item.day_of_month) + ' ' + item.year + (weekday ? ' (' + weekday + ')' : '');
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + escapeHtml(dateLabel) + (item.element_name ? '<br><span class="muted">' + escapeHtml(item.element_name) + '</span>' : '') + '</td>' +
+        '<td>' + escapeHtml(item.element_name || '-') + '</td>' +
+        '<td>' + escapeHtml(item.help_colors || '-') + '</td>' +
+        '<td>' + escapeHtml(item.love_colors || '-') + '</td>' +
+        '<td>' + escapeHtml(item.luck_colors || '-') + '</td>' +
+        '<td>' + escapeHtml(item.problem_colors || '-') + '</td>' +
+        '<td class="row-actions"></td>';
+      const actionsTd = tr.querySelector('.row-actions');
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn-secondary';
+      editBtn.textContent = 'แก้ไข';
+      editBtn.onclick = () => openDailyColorForm(item);
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-danger';
+      delBtn.textContent = 'ลบ';
+      delBtn.onclick = () => deleteDailyColor(item.id);
+      actionsTd.appendChild(editBtn);
+      actionsTd.appendChild(delBtn);
+      body.appendChild(tr);
+    }
+  }
+
+  // ---------- สถานที่ศักดิ์สิทธิ์ ----------
+  // ---------- รายการแบบกดเพิ่มทีละข้อ (วิธีเดินทาง / ขั้นตอนการไหว้) ----------
+  // เก็บลงฐานข้อมูลเป็นข้อความหลายบรรทัด "หัวข้อ | รายละเอียด" (ไม่ต้องแก้ฝั่ง backend)
+  function parseLines(text) {
+    return (text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => {
+      const i = l.indexOf('|');
+      return i > 0 ? { title: l.slice(0, i).trim(), detail: l.slice(i + 1).trim() } : { title: '', detail: l };
+    });
+  }
+  function serializeRows(listId) {
+    const rows = document.querySelectorAll('#' + listId + ' .rep-row');
+    const out = [];
+    rows.forEach(r => {
+      const t = r.querySelector('.rep-title').value.trim().replace(/[|\r\n]+/g, ' ');
+      const d = r.querySelector('.rep-detail').value.trim().replace(/[|\r\n]+/g, ' ');
+      if (!t && !d) return;
+      out.push(t ? (t + ' | ' + d).trim() : d);
+    });
+    return out.join('\n');
+  }
+  function refreshNumbers(listId) {
+    const list = document.getElementById(listId);
+    const rows = list.querySelectorAll('.rep-row');
+    rows.forEach((r, i) => {
+      const n = r.querySelector('.rep-num');
+      if (n) n.textContent = i + 1;
+    });
+    let empty = list.querySelector('.rep-empty');
+    if (!rows.length) {
+      if (!empty) {
+        empty = document.createElement('div');
+        empty.className = 'rep-empty';
+        empty.textContent = 'ยังไม่มีรายการ — กดปุ่ม "+ เพิ่ม" ด้านล่าง';
+        list.appendChild(empty);
+      }
+    } else if (empty) {
+      empty.remove();
+    }
+  }
+  function addRepRow(listId, opts, item) {
+    const list = document.getElementById(listId);
+    const row = document.createElement('div');
+    row.className = 'rep-row' + (opts.numbered ? '' : ' no-num');
+    if (opts.numbered) {
+      const num = document.createElement('div');
+      num.className = 'rep-num';
+      row.appendChild(num);
+    }
+    const title = document.createElement('input');
+    title.type = 'text';
+    title.className = 'rep-title';
+    title.placeholder = opts.titlePlaceholder;
+    if (opts.datalist) title.setAttribute('list', opts.datalist);
+    title.value = item ? item.title : '';
+    const detail = document.createElement('textarea');
+    detail.className = 'rep-detail';
+    detail.placeholder = opts.detailPlaceholder;
+    detail.value = item ? item.detail : '';
+    const btns = document.createElement('div');
+    btns.className = 'rep-btns';
+    if (opts.numbered) {
+      const up = document.createElement('button');
+      up.type = 'button'; up.className = 'btn-secondary'; up.textContent = '▲'; up.title = 'เลื่อนขึ้น';
+      up.onclick = () => { const p = row.previousElementSibling; if (p && p.classList.contains('rep-row')) { list.insertBefore(row, p); refreshNumbers(listId); } };
+      const down = document.createElement('button');
+      down.type = 'button'; down.className = 'btn-secondary'; down.textContent = '▼'; down.title = 'เลื่อนลง';
+      down.onclick = () => { const n = row.nextElementSibling; if (n && n.classList.contains('rep-row')) { list.insertBefore(n, row); refreshNumbers(listId); } };
+      btns.appendChild(up); btns.appendChild(down);
+    }
+    const del = document.createElement('button');
+    del.type = 'button'; del.className = 'btn-danger'; del.textContent = 'ลบ';
+    del.onclick = () => { row.remove(); refreshNumbers(listId); };
+    btns.appendChild(del);
+    row.appendChild(title); row.appendChild(detail); row.appendChild(btns);
+    list.appendChild(row);
+    refreshNumbers(listId);
+    return row;
+  }
+  const TRAVEL_OPTS = { numbered: false, titlePlaceholder: 'ประเภท เช่น รถไฟฟ้า', detailPlaceholder: 'เช่น BTS สถานีชิดลม ทางออก 6 เดินต่อประมาณ 5 นาที', datalist: 'travelTypeList' };
+  const WORSHIP_OPTS = { numbered: true, titlePlaceholder: 'ชื่อขั้นตอน เช่น จุดธูปเทียน', detailPlaceholder: 'รายละเอียด (ไม่บังคับ)', datalist: null };
+  function addTravelRow(item) { return addRepRow('travelList', TRAVEL_OPTS, item); }
+  function addWorshipRow(item) { return addRepRow('worshipList', WORSHIP_OPTS, item); }
+  function fillRepLists(item) {
+    document.getElementById('travelList').innerHTML = '';
+    document.getElementById('worshipList').innerHTML = '';
+    parseLines(item && item.travel_info).forEach(addTravelRow);
+    parseLines(item && item.worship_steps).forEach(addWorshipRow);
+    refreshNumbers('travelList');
+    refreshNumbers('worshipList');
+  }
+
+  // ---------- บทสวด (เก็บเป็น JSON ใน chants) ----------
+  function addChantRow(item) {
+    const list = document.getElementById('chantList');
+    const row = document.createElement('div');
+    row.className = 'rep-row chant-row';
+    const num = document.createElement('div');
+    num.className = 'rep-num';
+    const fields = document.createElement('div');
+    fields.className = 'rep-fields';
+    const title = document.createElement('input');
+    title.type = 'text'; title.className = 'chant-title';
+    title.placeholder = 'ชื่อบทสวด เช่น คาถาบูชาพระพรหม';
+    title.value = item ? (item.title || '') : '';
+    const text = document.createElement('textarea');
+    text.className = 'chant-text';
+    text.placeholder = 'ตัวบทสวด (1 บรรทัดต่อ 1 วรรค)';
+    text.value = item ? (item.text || '') : '';
+    const note = document.createElement('input');
+    note.type = 'text'; note.className = 'chant-note';
+    note.placeholder = 'หมายเหตุ (ไม่บังคับ) เช่น สวด 3 จบ';
+    note.value = item ? (item.note || '') : '';
+    fields.appendChild(title); fields.appendChild(text); fields.appendChild(note);
+    const btns = document.createElement('div');
+    btns.className = 'rep-btns';
+    const up = document.createElement('button');
+    up.type = 'button'; up.className = 'btn-secondary'; up.textContent = '▲'; up.title = 'เลื่อนขึ้น';
+    up.onclick = () => { const p = row.previousElementSibling; if (p && p.classList.contains('rep-row')) { list.insertBefore(row, p); refreshNumbers('chantList'); } };
+    const down = document.createElement('button');
+    down.type = 'button'; down.className = 'btn-secondary'; down.textContent = '▼'; down.title = 'เลื่อนลง';
+    down.onclick = () => { const n = row.nextElementSibling; if (n && n.classList.contains('rep-row')) { list.insertBefore(n, row); refreshNumbers('chantList'); } };
+    const del = document.createElement('button');
+    del.type = 'button'; del.className = 'btn-danger'; del.textContent = 'ลบ';
+    del.onclick = () => { row.remove(); refreshNumbers('chantList'); };
+    btns.appendChild(up); btns.appendChild(down); btns.appendChild(del);
+    row.appendChild(num); row.appendChild(fields); row.appendChild(btns);
+    list.appendChild(row);
+    refreshNumbers('chantList');
+    return row;
+  }
+  function serializeChants() {
+    const out = [];
+    document.querySelectorAll('#chantList .rep-row').forEach(r => {
+      const title = r.querySelector('.chant-title').value.trim();
+      const text = r.querySelector('.chant-text').value.replace(/\r\n/g, '\n').trim();
+      const note = r.querySelector('.chant-note').value.trim();
+      if (!title && !text) return;
+      out.push({ title, text, note });
+    });
+    return out.length ? JSON.stringify(out) : null;
+  }
+  function fillChants(item) {
+    document.getElementById('chantList').innerHTML = '';
+    let arr = [];
+    try { arr = JSON.parse((item && item.chants) || '[]'); } catch (e) { arr = []; }
+    if (Array.isArray(arr)) arr.forEach(addChantRow);
+    refreshNumbers('chantList');
+  }
+
+  function openPlaceForm(item) {
+    document.getElementById('placeFormWrap').style.display = 'block';
+    document.getElementById('placeId').value = item ? item.id : '';
+    document.getElementById('placeName').value = item ? item.name : '';
+    document.getElementById('placeCategory').value = item ? (item.category || '') : '';
+    document.getElementById('placeHighlight').value = item ? (item.highlight || '') : '';
+    document.getElementById('placeProvince').value = item ? item.province : 'กรุงเทพมหานคร';
+    document.getElementById('placeDistrict').value = item ? (item.district || '') : '';
+    document.getElementById('placeLat').value = item && item.latitude != null ? item.latitude : '';
+    document.getElementById('placeLng').value = item && item.longitude != null ? item.longitude : '';
+    document.getElementById('placeImageUrl').value = item ? (item.image_url || '') : '';
+    document.getElementById('placeDesc').value = item ? (item.description || '') : '';
+    document.getElementById('placeSource').value = item ? (item.source_note || '') : '';
+    document.getElementById('placeWishTags').value = item ? (item.wish_tags || '') : '';
+    fillRepLists(item);
+    fillChants(item);
+    document.getElementById('placeOfferings').value = item ? (item.offerings || '') : '';
+    document.getElementById('placeHours').value = item ? (item.opening_hours || '') : '';
+    document.getElementById('placeBestTime').value = item ? (item.best_time || '') : '';
+    document.getElementById('placeEtiquette').value = item ? (item.etiquette || '') : '';
+  }
+  function closePlaceForm() { document.getElementById('placeFormWrap').style.display = 'none'; }
+
+  async function savePlace() {
+    const id = document.getElementById('placeId').value;
+    const latVal = document.getElementById('placeLat').value;
+    const lngVal = document.getElementById('placeLng').value;
+    const payload = {
+      name: document.getElementById('placeName').value.trim(),
+      category: document.getElementById('placeCategory').value.trim() || null,
+      province: document.getElementById('placeProvince').value.trim() || 'กรุงเทพมหานคร',
+      district: document.getElementById('placeDistrict').value.trim() || null,
+      highlight: document.getElementById('placeHighlight').value.trim() || null,
+      description: document.getElementById('placeDesc').value.trim() || null,
+      latitude: latVal === '' ? null : parseFloat(latVal),
+      longitude: lngVal === '' ? null : parseFloat(lngVal),
+      image_url: document.getElementById('placeImageUrl').value.trim() || null,
+      source_note: document.getElementById('placeSource').value.trim() || null,
+      wish_tags: document.getElementById('placeWishTags').value.trim() || null,
+      travel_info: serializeRows('travelList') || null,
+      chants: serializeChants(),
+      worship_steps: serializeRows('worshipList') || null,
+      offerings: document.getElementById('placeOfferings').value.trim() || null,
+      opening_hours: document.getElementById('placeHours').value.trim() || null,
+      best_time: document.getElementById('placeBestTime').value.trim() || null,
+      etiquette: document.getElementById('placeEtiquette').value.trim() || null,
+    };
+    if (!payload.name) { showMessage('กรุณากรอกชื่อสถานที่', true); return; }
+    try {
+      if (id) {
+        await apiFetch('/admin/content/sacred-places/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+        showMessage('แก้ไขแล้ว');
+      } else {
+        await apiFetch('/admin/content/sacred-places', { method: 'POST', body: JSON.stringify(payload) });
+        showMessage('เพิ่มรายการแล้ว');
+      }
+      closePlaceForm();
+      await loadPlaces();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function deletePlace(id) {
+    if (!confirm('ลบรายการนี้เลยไหม? กู้คืนไม่ได้นะคะ')) return;
+    try {
+      await apiFetch('/admin/content/sacred-places/' + id, { method: 'DELETE' });
+      showMessage('ลบแล้ว');
+      await loadPlaces();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function loadPlaces() {
+    const items = await apiFetch('/admin/content/sacred-places');
+    const body = document.getElementById('placeTableBody');
+    const table = document.getElementById('placeTable');
+    const empty = document.getElementById('placeEmptyNote');
+    body.innerHTML = '';
+    if (!items.length) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    table.style.display = 'table';
+    empty.style.display = 'none';
+    for (const item of items) {
+      const area = [item.district, item.province].filter(Boolean).join(', ');
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + escapeHtml(item.name) + '</td>' +
+        '<td>' + escapeHtml(item.category || '-') + '</td>' +
+        '<td>' + escapeHtml(area || '-') + '</td>' +
+        '<td>' + [['เดินทาง', item.travel_info], ['ลำดับไหว้', item.worship_steps], ['ของไหว้', item.offerings], ['บทสวด', item.chants], ['ข้อควรรู้', item.etiquette || item.opening_hours]]
+          .map(([t, v]) => '<span class="chk' + (v ? ' on' : '') + '">' + (v ? '✓' : '○') + ' ' + t + '</span>').join('') + '</td>' +
+        '<td class="row-actions"></td>';
+      const actionsTd = tr.querySelector('.row-actions');
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn-secondary';
+      editBtn.textContent = 'แก้ไข';
+      editBtn.onclick = () => openPlaceForm(item);
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-danger';
+      delBtn.textContent = 'ลบ';
+      delBtn.onclick = () => deletePlace(item.id);
+      actionsTd.appendChild(editBtn);
+      actionsTd.appendChild(delBtn);
+      body.appendChild(tr);
+    }
+  }
+
+  // ---------- บทความองค์เทพ ----------
+  function addArticleSectionRow(item) {
+    const list = document.getElementById('articleSectionList');
+    const row = document.createElement('div');
+    row.className = 'rep-row chant-row';
+    const num = document.createElement('div');
+    num.className = 'rep-num';
+    const fields = document.createElement('div');
+    fields.className = 'rep-fields';
+    const heading = document.createElement('input');
+    heading.type = 'text'; heading.className = 'art-heading';
+    heading.placeholder = 'หัวข้อ เช่น ความเป็นมา';
+    heading.value = item ? (item.heading || '') : '';
+    const body = document.createElement('textarea');
+    body.className = 'art-body';
+    body.placeholder = 'เนื้อหาของหัวข้อนี้';
+    body.value = item ? (item.body || '') : '';
+    fields.appendChild(heading); fields.appendChild(body);
+    const btns = document.createElement('div');
+    btns.className = 'rep-btns';
+    const up = document.createElement('button');
+    up.type = 'button'; up.className = 'btn-secondary'; up.textContent = '▲'; up.title = 'เลื่อนขึ้น';
+    up.onclick = () => { const p = row.previousElementSibling; if (p && p.classList.contains('rep-row')) { list.insertBefore(row, p); refreshNumbers('articleSectionList'); } };
+    const down = document.createElement('button');
+    down.type = 'button'; down.className = 'btn-secondary'; down.textContent = '▼'; down.title = 'เลื่อนลง';
+    down.onclick = () => { const n = row.nextElementSibling; if (n && n.classList.contains('rep-row')) { list.insertBefore(n, row); refreshNumbers('articleSectionList'); } };
+    const del = document.createElement('button');
+    del.type = 'button'; del.className = 'btn-danger'; del.textContent = 'ลบ';
+    del.onclick = () => { row.remove(); refreshNumbers('articleSectionList'); };
+    btns.appendChild(up); btns.appendChild(down); btns.appendChild(del);
+    row.appendChild(num); row.appendChild(fields); row.appendChild(btns);
+    list.appendChild(row);
+    refreshNumbers('articleSectionList');
+    return row;
+  }
+  function serializeArticleSections() {
+    const out = [];
+    document.querySelectorAll('#articleSectionList .rep-row').forEach(r => {
+      const heading = r.querySelector('.art-heading').value.trim();
+      const body = r.querySelector('.art-body').value.replace(/\r\n/g, '\n').trim();
+      if (!heading && !body) return;
+      out.push({ heading, body });
+    });
+    return out.length ? JSON.stringify(out) : null;
+  }
+  function fillArticleSections(item) {
+    document.getElementById('articleSectionList').innerHTML = '';
+    let arr = [];
+    try { arr = JSON.parse((item && item.sections) || '[]'); } catch (e) { arr = []; }
+    if (Array.isArray(arr)) arr.forEach(addArticleSectionRow);
+    refreshNumbers('articleSectionList');
+  }
+
+  function openArticleForm(item) {
+    document.getElementById('articleFormWrap').style.display = 'block';
+    document.getElementById('articleId').value = item ? item.id : '';
+    document.getElementById('articleTitle').value = item ? item.title : '';
+    document.getElementById('articleSlug').value = item ? item.slug : '';
+    document.getElementById('articleSubtitle').value = item ? (item.subtitle || '') : '';
+    document.getElementById('articleSummary').value = item ? (item.summary || '') : '';
+    const topics = item && item.topics ? item.topics.split(',') : [];
+    document.querySelectorAll('#articleTopics input').forEach(c => { c.checked = topics.includes(c.value); });
+    document.getElementById('articleImageUrl').value = item ? (item.image_url || '') : '';
+    fillArticleSections(item);
+    document.getElementById('articleMantra').value = item ? (item.mantra || '') : '';
+    document.getElementById('articleMantraNote').value = item ? (item.mantra_note || '') : '';
+    document.getElementById('articleSource').value = item ? (item.source_note || '') : '';
+    document.getElementById('articleSort').value = item ? item.sort_order : 0;
+    document.getElementById('articlePublished').checked = item ? !!item.is_published : false;
+  }
+  function closeArticleForm() { document.getElementById('articleFormWrap').style.display = 'none'; }
+
+  async function saveArticle() {
+    const id = document.getElementById('articleId').value;
+    const topics = Array.from(document.querySelectorAll('#articleTopics input:checked')).map(c => c.value).join(',');
+    const payload = {
+      slug: document.getElementById('articleSlug').value.trim(),
+      title: document.getElementById('articleTitle').value.trim(),
+      subtitle: document.getElementById('articleSubtitle').value.trim() || null,
+      summary: document.getElementById('articleSummary').value.trim() || null,
+      topics: topics || null,
+      image_url: document.getElementById('articleImageUrl').value.trim() || null,
+      sections: serializeArticleSections(),
+      mantra: document.getElementById('articleMantra').value.trim() || null,
+      mantra_note: document.getElementById('articleMantraNote').value.trim() || null,
+      source_note: document.getElementById('articleSource').value.trim() || null,
+      is_published: document.getElementById('articlePublished').checked,
+      sort_order: parseInt(document.getElementById('articleSort').value, 10) || 0,
+    };
+    if (!payload.title) { showMessage('กรุณากรอกชื่อองค์เทพ', true); return; }
+    if (!/^[a-z0-9][a-z0-9_-]*$/.test(payload.slug)) {
+      showMessage('รหัสบทความต้องเป็น a-z 0-9 และ - เท่านั้น เช่น hindu-ganga', true);
+      return;
+    }
+    try {
+      if (id) {
+        await apiFetch('/admin/content/articles/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+        showMessage('แก้ไขแล้ว');
+      } else {
+        await apiFetch('/admin/content/articles', { method: 'POST', body: JSON.stringify(payload) });
+        showMessage('เพิ่มบทความแล้ว');
+      }
+      closeArticleForm();
+      await loadArticles();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function deleteArticle(id) {
+    if (!confirm('ลบบทความนี้เลยไหม? กู้คืนไม่ได้นะคะ')) return;
+    try {
+      await apiFetch('/admin/content/articles/' + id, { method: 'DELETE' });
+      showMessage('ลบแล้ว');
+      await loadArticles();
+    } catch (e) {
+      showMessage(e.message, true);
+    }
+  }
+
+  async function loadArticles() {
+    const items = await apiFetch('/admin/content/articles');
+    const body = document.getElementById('articleTableBody');
+    const table = document.getElementById('articleTable');
+    const empty = document.getElementById('articleEmptyNote');
+    body.innerHTML = '';
+    if (!items.length) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    table.style.display = 'table';
+    empty.style.display = 'none';
+    for (const item of items) {
+      let secCount = 0;
+      try { secCount = JSON.parse(item.sections || '[]').length; } catch (e) {}
+      const checks = [['เนื้อหา', secCount > 0], ['บทสวด', !!item.mantra], ['รูป', !!item.image_url], ['ที่มา', !!item.source_note]]
+        .map(([t, v]) => '<span class="chk' + (v ? ' on' : '') + '">' + (v ? '✓' : '○') + ' ' + t + '</span>').join('');
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + escapeHtml(item.title) + '</td>' +
+        '<td>' + escapeHtml(item.slug) + '</td>' +
+        '<td>' + (item.is_published ? '<span class="status-ok">เผยแพร่แล้ว</span>' : '<span class="muted">ฉบับร่าง</span>') + '</td>' +
+        '<td>' + checks + '</td>' +
+        '<td class="row-actions"></td>';
+      const actionsTd = tr.querySelector('.row-actions');
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn-secondary';
+      editBtn.textContent = 'แก้ไข';
+      editBtn.onclick = () => openArticleForm(item);
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-danger';
+      delBtn.textContent = 'ลบ';
+      delBtn.onclick = () => deleteArticle(item.id);
+      actionsTd.appendChild(editBtn);
+      actionsTd.appendChild(delBtn);
+      body.appendChild(tr);
+    }
+  }
+
+  const THAI_MONTH_ABBR = [
+    '', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.',
+  ];
+  function formatMonthDay(month, day) {
+    return day + ' ' + (THAI_MONTH_ABBR[month] || month);
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
+  loadConnection();
+</script>
+
+</body>
+</html>

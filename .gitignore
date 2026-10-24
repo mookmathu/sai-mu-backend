@@ -1,0 +1,24 @@
+# ความลับ — ห้ามขึ้น git เด็ดขาด
+.env
+.env.*
+!.env.example
+
+# ไฟล์ที่ระบบสร้าง
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+uploads/
+
+# ไฟล์สำรองที่ผมทำไว้ระหว่างแก้ — ลบได้เมื่อมั่นใจแล้ว
+*backup_before_*
+*.backup_*
+_email_preview.html
+
+# ค่าความลับสำหรับ deploy Cloud Run
+env.yaml
+
+# ไฟล์ใหญ่/ข้อมูลต้นฉบับ ไม่ขึ้น git (GitHub จำกัด 100MB ต่อไฟล์)
+*.pdf
+*.xlsb
+env.yaml

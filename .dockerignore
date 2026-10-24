@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.pytest_cache
+**/__pycache__
+tests
+app/tests
+docs
+scripts
+app/rag/eval
+*.md
+.git
+env.yaml

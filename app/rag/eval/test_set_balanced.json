@@ -1,0 +1,102 @@
+[
+  {
+    "question": "เลข 13 เป็นเลขร้ายจริงไหมในเลขศาสตร์ไทย",
+    "expected_chunk_id": "number-13",
+    "category": "numerology"
+  },
+  {
+    "question": "ผลรวมชื่อได้เลข 62 ทำนายว่ายังไง",
+    "expected_chunk_id": "number-62",
+    "category": "numerology"
+  },
+  {
+    "question": "เลข 7 ดาวเสาร์มีอิทธิพลด้านไหนบ้าง",
+    "expected_chunk_id": "number-7",
+    "category": "numerology"
+  },
+  {
+    "question": "อยากทราบความหมายของเลข 41",
+    "expected_chunk_id": "number-41",
+    "category": "numerology"
+  },
+  {
+    "question": "ดวงจันทร์โคจรผ่านภพที่เกี่ยวกับความรักและคู่ครองหมายถึงอะไร",
+    "expected_chunk_id": "house-7",
+    "category": "house"
+  },
+  {
+    "question": "ช่วงที่เกี่ยวกับเรื่องเงินทองรายได้ ดวงจันทร์ผ่านภพไหน",
+    "expected_chunk_id": "house-2",
+    "category": "house"
+  },
+  {
+    "question": "วันที่ดวงจันทร์ผ่านภพการงานอาชีพ ควรทำอะไร",
+    "expected_chunk_id": "house-10",
+    "category": "house"
+  },
+  {
+    "question": "ธาตุไฟกับธาตุน้ำเข้ากันไหม",
+    "expected_chunk_id": "astro-element-relations",
+    "category": "element_sign"
+  },
+  {
+    "question": "ราศีสิงห์เป็นธาตุอะไร และราศีไหนธาตุเดียวกัน",
+    "expected_chunk_id": "astro-element-overview",
+    "category": "element_sign"
+  },
+  {
+    "question": "ราศีพิจิกจัดเป็นราศีประเภทไหน",
+    "expected_chunk_id": "astro-sign-types",
+    "category": "element_sign"
+  },
+  {
+    "question": "ดาวศุกร์เกี่ยวข้องกับเรื่องอะไรในชีวิต",
+    "expected_chunk_id": "book-planet-meanings",
+    "category": "planet"
+  },
+  {
+    "question": "ราหูกับเกตุเป็นดาวจริงไหม",
+    "expected_chunk_id": "astro-planets-overview",
+    "category": "planet"
+  },
+  {
+    "question": "ดาวศุกร์เป็นเกษตรอยู่ราศีอะไร และผลเป็นอย่างไร",
+    "expected_chunk_id": "book-kasetra-pra",
+    "category": "planet"
+  },
+  {
+    "question": "ภพปัตนิคืออะไร หาได้จากอะไร",
+    "expected_chunk_id": "book-patni-method",
+    "category": "couple"
+  },
+  {
+    "question": "ฉันกับแฟนจะเข้ากันไหม โหราศาสตร์ไทยดูจากอะไรบ้าง",
+    "expected_chunk_id": "couple-principles",
+    "category": "couple"
+  },
+  {
+    "question": "ถ้าดาวศรีอยู่ภพปัตนิ ผลเรื่องคู่ครองเป็นอย่างไร",
+    "expected_chunk_id": "book-taksa-sri-houses",
+    "category": "couple"
+  },
+  {
+    "question": "คนเกิดวันจันทร์เป็นคนยังไง",
+    "expected_chunk_id": "birthday-mon",
+    "category": "birthday"
+  },
+  {
+    "question": "ฉันเกิดวันพุธกลางคืน มีนิสัยแบบไหน",
+    "expected_chunk_id": "birthday-wed-night",
+    "category": "birthday"
+  },
+  {
+    "question": "พระพิฆเนศช่วยเรื่องอะไร",
+    "expected_chunk_id": "hindu-ganesha",
+    "category": "deity"
+  },
+  {
+    "question": "พระแม่ลักษมีเกี่ยวกับเรื่องอะไร",
+    "expected_chunk_id": "hindu-lakshmi",
+    "category": "deity"
+  }
+]

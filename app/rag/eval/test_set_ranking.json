@@ -1,0 +1,176 @@
+[
+ {
+  "question": "เลข 5 หมายถึงอะไร",
+  "relevant": {
+   "number-5": 2
+  }
+ },
+ {
+  "question": "เลข 11 ต่างจากเลข 1 ยังไง",
+  "relevant": {
+   "number-11": 2,
+   "number-1": 1
+  }
+ },
+ {
+  "question": "ผลรวมชื่อได้เลข 62 ทำนายว่ายังไง",
+  "relevant": {
+   "number-62": 2
+  }
+ },
+ {
+  "question": "เลข 13 เป็นเลขร้ายจริงไหมในเลขศาสตร์ไทย",
+  "relevant": {
+   "number-13": 2
+  }
+ },
+ {
+  "question": "เลข 7 ดาวเสาร์มีอิทธิพลด้านไหนบ้าง",
+  "relevant": {
+   "number-7": 2
+  }
+ },
+ {
+  "question": "เลข 24 ดีไหม",
+  "relevant": {
+   "number-24": 2
+  }
+ },
+ {
+  "question": "เลข 36 บอกอะไรเกี่ยวกับดวงชะตา",
+  "relevant": {
+   "number-36": 2
+  }
+ },
+ {
+  "question": "เลข 8 ให้คุณให้โทษยังไง",
+  "relevant": {
+   "number-8": 2
+  }
+ },
+ {
+  "question": "ดวงจันทร์โคจรผ่านภพที่เกี่ยวกับความรักและคู่ครองหมายถึงอะไร",
+  "relevant": {
+   "house-7": 2,
+   "house-5": 1
+  }
+ },
+ {
+  "question": "ช่วงที่เกี่ยวกับเรื่องเงินทองรายได้ ดวงจันทร์ผ่านภพไหน",
+  "relevant": {
+   "house-2": 2,
+   "house-11": 1
+  }
+ },
+ {
+  "question": "วันที่ดวงจันทร์ผ่านภพการงานอาชีพ ควรทำอะไร",
+  "relevant": {
+   "house-10": 2,
+   "house-6": 1
+  }
+ },
+ {
+  "question": "ดวงจันทร์ผ่านภพสุขภาพและตัวตน หมายถึงอะไร",
+  "relevant": {
+   "house-1": 2,
+   "house-6": 1
+  }
+ },
+ {
+  "question": "ภพที่เกี่ยวกับการเดินทางไกลและการศึกษาสูง",
+  "relevant": {
+   "house-9": 2,
+   "house-3": 1
+  }
+ },
+ {
+  "question": "ภพที่เกี่ยวกับครอบครัว บ้าน และที่อยู่อาศัย",
+  "relevant": {
+   "house-4": 2
+  }
+ },
+ {
+  "question": "ราศีตุลย์มีนิสัยเป็นยังไง",
+  "relevant": {
+   "zodiac-ตุลย์": 2
+  }
+ },
+ {
+  "question": "คนราศีมังกรเป็นคนแบบไหน",
+  "relevant": {
+   "zodiac-มกร": 2
+  }
+ },
+ {
+  "question": "ราศีเมษกับนิสัยการทำงาน",
+  "relevant": {
+   "zodiac-เมษ": 2
+  }
+ },
+ {
+  "question": "ราศีมีนเป็นคนอ่อนไหวไหม",
+  "relevant": {
+   "zodiac-มีน": 2
+  }
+ },
+ {
+  "question": "พระพิฆเนศเป็นเทพแห่งอะไร",
+  "relevant": {
+   "hindu-ganesha": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "เทพที่ให้โชคลาภและความมั่งคั่งคือองค์ไหน",
+  "relevant": {
+   "hindu-lakshmi": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "พระแม่กาลีมีความหมายอย่างไร",
+  "relevant": {
+   "hindu-kali": 2
+  }
+ },
+ {
+  "question": "เทพเจ้าฮินดูที่เกี่ยวกับความรู้และศิลปะ",
+  "relevant": {
+   "hindu-saraswati": 2,
+   "hindu-overview": 1
+  }
+ },
+ {
+  "question": "ทักษาคืออะไร ใช้เช็คชื่อยังไง",
+  "relevant": {
+   "taksa-overview": 2
+  }
+ },
+ {
+  "question": "มุมสัมพันธ์ระหว่างดาว orb คืออะไร",
+  "relevant": {
+   "aspect-orb-and-thai-method": 2,
+   "aspect-overview": 1
+  }
+ },
+ {
+  "question": "สูตรทำผัดกะเพราหมูสับ",
+  "relevant": {}
+ },
+ {
+  "question": "วิธีเขียนโปรแกรม Python",
+  "relevant": {}
+ },
+ {
+  "question": "ราคาทองวันนี้เท่าไหร่",
+  "relevant": {}
+ },
+ {
+  "question": "ใครชนะฟุตบอลโลกปีที่แล้ว",
+  "relevant": {}
+ },
+ {
+  "question": "แนะนำร้านอาหารแถวสยาม",
+  "relevant": {}
+ }
+]
