@@ -22,3 +22,9 @@ env.yaml
 *.pdf
 *.xlsb
 env.yaml
+
+sonar_issues.json
+.scannerwork/
+_sonarfix_backup/
+coverage.xml
+.coverage

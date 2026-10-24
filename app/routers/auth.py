@@ -48,7 +48,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 bearer_scheme = HTTPBearer()
 
 
-@router.post("/otp/request", response_model=OtpRequestResponse)
+@router.post("/otp/request", response_model=OtpRequestResponse, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def request_otp(data: OtpRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     email = otp.normalize_email(data.email)
     user = crud.get_user_by_email(db, email)
@@ -70,7 +70,7 @@ def request_otp(data: OtpRequest, background_tasks: BackgroundTasks, db: Session
     )
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
     if crud.get_user_by_email(db, data.email):
         raise HTTPException(status_code=400, detail="อีเมลนี้ถูกใช้งานแล้ว")
@@ -86,7 +86,7 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)):
     return TokenResponse(access_token=token, user=UserOut.model_validate(user))
 
 
-@router.post("/password/verify-otp", response_model=ResetTokenResponse)
+@router.post("/password/verify-otp", response_model=ResetTokenResponse, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def verify_reset_otp(data: OtpVerifyRequest, db: Session = Depends(get_db)):
     """ขั้นที่ 2 ของลืมรหัสผ่าน: ตรวจ OTP แล้วแลกเป็น reset_token อายุสั้น เพื่อให้
     ผู้ใช้ไปกรอกรหัสผ่านใหม่ในหน้าถัดไป (OTP ถูกใช้ไปแล้วตรงนี้ ใช้ซ้ำไม่ได้)"""
@@ -98,7 +98,7 @@ def verify_reset_otp(data: OtpVerifyRequest, db: Session = Depends(get_db)):
     return ResetTokenResponse(reset_token=security.create_reset_token(user.id))
 
 
-@router.post("/password/reset", response_model=MessageResponse)
+@router.post("/password/reset", response_model=MessageResponse, responses={401: {"description": "ยังไม่ได้ล็อกอินหรือข้อมูลล็อกอินไม่ถูกต้อง"}})
 def reset_password(data: PasswordResetRequest, db: Session = Depends(get_db)):
     """ขั้นที่ 3: ตั้งรหัสผ่านใหม่ด้วย reset_token ที่ได้จาก /password/verify-otp"""
     user_id = security.decode_reset_token(data.reset_token)
@@ -186,7 +186,7 @@ def login_with_facebook(data: FacebookLoginRequest, background_tasks: Background
     return _social_login(db, social.verify_facebook_access_token(data.access_token), background_tasks)
 
 
-@router.post("/social/complete", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/social/complete", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}, 401: {"description": "ยังไม่ได้ล็อกอินหรือข้อมูลล็อกอินไม่ถูกต้อง"}})
 def complete_social_signup(data: SocialCompleteRequest, db: Session = Depends(get_db)):
     claims = security.decode_registration_token(data.registration_token)
     if claims is None:
@@ -223,7 +223,7 @@ def complete_social_signup(data: SocialCompleteRequest, db: Session = Depends(ge
     return TokenResponse(access_token=token, user=UserOut.model_validate(user))
 
 
-@router.post("/login", response_model=LoginResponse)
+@router.post("/login", response_model=LoginResponse, responses={401: {"description": "ยังไม่ได้ล็อกอินหรือข้อมูลล็อกอินไม่ถูกต้อง"}})
 def login(data: LoginRequest, request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     ip = request.client.host if request.client else None
     login_throttle.check(data.email, ip)  # ถูกพักอยู่ → 429 ก่อนตรวจรหัสผ่านด้วยซ้ำ
@@ -250,7 +250,7 @@ def login(data: LoginRequest, request: Request, background_tasks: BackgroundTask
     return LoginResponse(otp_required=False, access_token=token, user=UserOut.model_validate(user))
 
 
-@router.post("/login/verify", response_model=TokenResponse)
+@router.post("/login/verify", response_model=TokenResponse, responses={401: {"description": "ยังไม่ได้ล็อกอินหรือข้อมูลล็อกอินไม่ถูกต้อง"}})
 def verify_login_otp(data: OtpVerifyRequest, db: Session = Depends(get_db)):
     """ขั้นที่ 2 ของการล็อกอิน: ตรวจ OTP แล้วออก token (OTP นี้ออกให้เฉพาะหลังรหัสผ่านถูกต้องเท่านั้น)"""
     email = otp.normalize_email(data.email)
@@ -295,7 +295,7 @@ def read_current_user(current_user=Depends(get_current_user)):
     return current_user
 
 
-@router.patch("/me", response_model=UserOut)
+@router.patch("/me", response_model=UserOut, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def update_current_user(
     data: UpdateProfileRequest,
     current_user=Depends(get_current_user),
@@ -334,7 +334,7 @@ def delete_avatar(current_user=Depends(get_current_user), db: Session = Depends(
     return current_user
 
 
-@router.delete("/me", response_model=MessageResponse)
+@router.delete("/me", response_model=MessageResponse, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def delete_account(
     data: DeleteAccountRequest | None = Body(default=None),
     current_user=Depends(get_current_user),

@@ -45,7 +45,7 @@ def list_daily_colors(
     ).all()
 
 
-@router.get("/daily-colors/today", response_model=DailyColorChartOut)
+@router.get("/daily-colors/today", response_model=DailyColorChartOut, responses={404: {"description": "ไม่พบข้อมูล"}})
 def get_today_daily_color(db: Session = Depends(get_db)):
     """คืนแถวของ "วันนี้" ตามวันที่จริงของเซิร์ฟเวอร์ — สะดวกสำหรับการ์ด
     "สีมงคลวันนี้" หน้าแรกของแอป ถ้ายังไม่มีใครกรอกข้อมูลของเดือนนี้ไว้ คืน 404
@@ -79,7 +79,7 @@ def list_sacred_places(
     return query.order_by(models.SacredPlace.name).all()
 
 
-@router.get("/sacred-places/{item_id}", response_model=SacredPlaceOut)
+@router.get("/sacred-places/{item_id}", response_model=SacredPlaceOut, responses={404: {"description": "ไม่พบข้อมูล"}})
 def get_sacred_place(item_id: int, db: Session = Depends(get_db)):
     item = db.get(models.SacredPlace, item_id)
     if item is None:

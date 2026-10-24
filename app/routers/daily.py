@@ -66,7 +66,7 @@ class DailyFortuneOut(BaseModel):
     caution_key: str | None = None
 
 
-@router.get("/fortune", response_model=DailyFortuneOut)
+@router.get("/fortune", response_model=DailyFortuneOut, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def get_daily_fortune(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
     profile = current_user.astro_profile
     if profile is None or not profile.zodiac_sign:

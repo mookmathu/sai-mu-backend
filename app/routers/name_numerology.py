@@ -82,7 +82,7 @@ class NameOut(BaseModel):
     source: str
 
 
-@router.post("/name", response_model=NameOut)
+@router.post("/name", response_model=NameOut, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def analyze_name(body: NameRequest, user=Depends(get_optional_user), db: Session = Depends(get_db)):
     try:
         result = name_numerology.analyze_name(body.first_name, body.last_name, body.gender)
@@ -116,7 +116,7 @@ class NumberOut(BaseModel):
     source: str
 
 
-@router.post("/number", response_model=NumberOut)
+@router.post("/number", response_model=NumberOut, responses={400: {"description": "ข้อมูลที่ส่งมาไม่ถูกต้อง"}})
 def analyze_number(body: NumberRequest, user=Depends(get_optional_user), db: Session = Depends(get_db)):
     """เบอร์โทร / ทะเบียนรถ เช่น 0812345678 หรือ 5กก-1555"""
     try:

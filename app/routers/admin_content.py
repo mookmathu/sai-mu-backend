@@ -54,7 +54,7 @@ def create_daily_color(data: DailyColorChartIn, db: Session = Depends(get_db)):
     return crud.create_daily_color_chart(db, data)
 
 
-@router.put("/daily-colors/{item_id}", response_model=DailyColorChartOut)
+@router.put("/daily-colors/{item_id}", response_model=DailyColorChartOut, responses={404: {"description": "ไม่พบข้อมูล"}})
 def update_daily_color(item_id: int, data: DailyColorChartIn, db: Session = Depends(get_db)):
     item = crud.get_daily_color_chart(db, item_id)
     if item is None:
@@ -62,7 +62,7 @@ def update_daily_color(item_id: int, data: DailyColorChartIn, db: Session = Depe
     return crud.update_daily_color_chart(db, item, data)
 
 
-@router.delete("/daily-colors/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/daily-colors/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
 def delete_daily_color(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_daily_color_chart(db, item_id)
     if item is None:
@@ -83,7 +83,7 @@ def create_sacred_place(data: SacredPlaceIn, db: Session = Depends(get_db)):
     return crud.create_sacred_place(db, data)
 
 
-@router.put("/sacred-places/{item_id}", response_model=SacredPlaceOut)
+@router.put("/sacred-places/{item_id}", response_model=SacredPlaceOut, responses={404: {"description": "ไม่พบข้อมูล"}})
 def update_sacred_place(item_id: int, data: SacredPlaceIn, db: Session = Depends(get_db)):
     item = crud.get_sacred_place(db, item_id)
     if item is None:
@@ -91,7 +91,7 @@ def update_sacred_place(item_id: int, data: SacredPlaceIn, db: Session = Depends
     return crud.update_sacred_place(db, item, data)
 
 
-@router.delete("/sacred-places/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/sacred-places/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
 def delete_sacred_place(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_sacred_place(db, item_id)
     if item is None:
@@ -107,14 +107,14 @@ def list_articles(db: Session = Depends(get_db)):
     return crud.list_deity_articles(db)
 
 
-@router.post("/articles", response_model=DeityArticleOut, status_code=status.HTTP_201_CREATED)
+@router.post("/articles", response_model=DeityArticleOut, status_code=status.HTTP_201_CREATED, responses={409: {"description": "ข้อมูลซ้ำหรือขัดแย้งกับที่มีอยู่"}})
 def create_article(data: DeityArticleIn, db: Session = Depends(get_db)):
     if crud.get_deity_article_by_slug(db, data.slug) is not None:
         raise HTTPException(status_code=409, detail="รหัสบทความ (slug) นี้มีอยู่แล้ว")
     return crud.create_deity_article(db, data)
 
 
-@router.put("/articles/{item_id}", response_model=DeityArticleOut)
+@router.put("/articles/{item_id}", response_model=DeityArticleOut, responses={404: {"description": "ไม่พบข้อมูล"}, 409: {"description": "ข้อมูลซ้ำหรือขัดแย้งกับที่มีอยู่"}})
 def update_article(item_id: int, data: DeityArticleIn, db: Session = Depends(get_db)):
     item = crud.get_deity_article(db, item_id)
     if item is None:
@@ -125,7 +125,7 @@ def update_article(item_id: int, data: DeityArticleIn, db: Session = Depends(get
     return crud.update_deity_article(db, item, data)
 
 
-@router.delete("/articles/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/articles/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
 def delete_article(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_deity_article(db, item_id)
     if item is None:
