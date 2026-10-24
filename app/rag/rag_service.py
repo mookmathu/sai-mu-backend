@@ -276,7 +276,8 @@ class NumerologyRAG:
 
         tailored_question = (
             f"{question}\n\n"
-            f"(ข้อมูลจริงจากระบบสำหรับวันนี้: {facts} — ช่วยเรียบเรียงเป็นคำตอบที่เป็น"
+            f"(นี่คือคำถามเรื่องสีมงคลประจำวันตามโหราศาสตร์ไทย อยู่ในขอบเขตแน่นอน ห้ามตอบ OUTOFSCOPE "
+            f"ข้อมูลจริงจากระบบสำหรับวันนี้: {facts} — ช่วยเรียบเรียงเป็นคำตอบที่เป็น"
             f"ธรรมชาติ สุภาพ ประโยคแรกตอบเรื่องสีเลย (ห้ามเล่าเรื่องดวงเรียน/สมาธิ/อารมณ์ หรือดวงภาพรวมของวัน) "
             f"ถ้าผู้ใช้เล่าเหตุการณ์ของวันนี้มาด้วย (เช่น สอบ สัมภาษณ์งาน เดท ประชุม) ให้เลือกกลุ่มสีจากข้อมูลให้ตรงกับเป้าหมายนั้น "
             f"(สอบ/เรียน/งานทั่วไป ใช้สีที่ช่วยเหลือ/เกื้อหนุน, ความรัก/เดท ใช้สีเสริมความรัก/มิตรภาพ, เงินทอง/ธุรกิจ ใช้สีเสริมโชคลาภ/ความสำเร็จ) "
@@ -287,6 +288,12 @@ class NumerologyRAG:
             f"ดวงคือ...' แทน)"
         )
         answer = self.gemini.answer(tailored_question, [])
+        if "OUTOFSCOPE" in answer.replace("_", "").replace(" ", "").upper():
+            good = color_row.help_colors or color_row.luck_colors or color_row.love_colors
+            bad = color_row.problem_colors
+            answer = f"วันนี้สีที่ช่วยเสริมดวงคือ {good}" if good else "วันนี้ยังไม่มีข้อมูลสีมงคลให้เลย"
+            if good and bad:
+                answer += f" ส่วนสีที่ควรเลี่ยงคือ {bad}"
         return {"answer": answer, "sources": []}
 
     def ask_car_color(self, question: str, facts: str) -> dict:
