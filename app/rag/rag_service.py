@@ -207,7 +207,7 @@ IN_SCOPE_KEYWORDS = [
 # (ใช้ list(...) ดึงจาก dict เดียวกับที่ transit.py ใช้จับหัวข้อจริง เพื่อไม่ต้องคอย
 # sync คำสองที่ให้ตรงกันเอง)
 
-SCOPE_SIMILARITY_THRESHOLD = 0.5
+SCOPE_SIMILARITY_THRESHOLD = 0.66
 
 OUT_OF_SCOPE_MESSAGE = (
     "ขอโทษด้วยนะ คำถามนี้อยู่นอกเหนือขอบเขตที่น้องมูตอบได้ \n\n"
@@ -226,7 +226,7 @@ def is_in_scope_by_keyword(question: str) -> bool:
 # เกณฑ์สัมพัทธ์: เก็บเฉพาะ chunk ที่คะแนนไม่ต่ำกว่าอันดับ 1 เกินค่านี้ (ตัด chunk
 # ข้างเคียงที่ไม่เกี่ยว เช่น "เลข 5" แล้วได้ number-55 ติดมา) — ที่มา: eval_retrieval.py
 # (delta sweep: δ=0.04 ได้ NDCG 0.949, Recall 0.90, เฉลี่ย 1.7 chunk) ปรับได้ตามผลวัดล่าสุด ตั้งเป็น None เพื่อปิด
-RELATIVE_SCORE_MARGIN = 0.04
+RELATIVE_SCORE_MARGIN = 0.01
 
 # ถามเลขเดี่ยวๆ ชัดเจน เช่น "เลข 8", "ได้เลข 62" — ไม่เอาเลขที่ต่อกับตัวเลขอื่น
 # (เบอร์โทร/ทะเบียน ถูกแยกไปทางอื่นใน chat.py ก่อนมาถึงนี่แล้ว) มีแค่ number-0..100
