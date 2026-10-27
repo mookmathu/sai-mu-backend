@@ -24,9 +24,17 @@ settings.login_otp_required = False  # เทสต์เดิมล็อก�
 
 @pytest.fixture(autouse=True)
 def _fresh_db():
+    # เทสต์ใน app/tests ตั้ง dependency_overrides ไว้ที่ app ตัวเดียวกัน — ล้างระหว่างเทสต์ชุดนี้ แล้วคืนค่าให้
+    saved = dict(app.dependency_overrides)
+    saved_admin_key = settings.admin_api_key
+    app.dependency_overrides.clear()
+    settings.admin_api_key = "test-admin-key"
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     yield
+    app.dependency_overrides.clear()
+    app.dependency_overrides.update(saved)
+    settings.admin_api_key = saved_admin_key
 
 
 @pytest.fixture

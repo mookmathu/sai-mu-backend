@@ -31,6 +31,9 @@ startup_checks.run(settings)
 Base.metadata.create_all(bind=engine)
 
 
+_VARCHAR_255 = "VARCHAR(255)"
+
+
 def _ensure_sacred_place_columns() -> None:
     """create_all ไม่เพิ่มคอลัมน์ให้ตารางเดิม — เติมคอลัมน์รายละเอียดสถานที่ (ต.ค. 2026) ให้อัตโนมัติ
     รันซ้ำได้ ถ้ามีอยู่แล้วจะข้าม (ไฟล์ SQL เทียบเท่าอยู่ที่ docs/migrations/2026-10-22_sacred_place_details.sql)"""
@@ -41,9 +44,9 @@ def _ensure_sacred_place_columns() -> None:
         "worship_steps": "TEXT",
         "offerings": "TEXT",
         "etiquette": "TEXT",
-        "opening_hours": "VARCHAR(255)",
-        "best_time": "VARCHAR(255)",
-        "wish_tags": "VARCHAR(255)",
+        "opening_hours": _VARCHAR_255,
+        "best_time": _VARCHAR_255,
+        "wish_tags": _VARCHAR_255,
         "chants": "TEXT",
     }
     try:

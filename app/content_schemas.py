@@ -108,7 +108,7 @@ class DeityArticleIn(BaseModel):
     summary: str | None = None
     topics: str | None = Field(None, max_length=255)  # คั่นจุลภาค
     image_url: str | None = Field(None, max_length=500)
-    sections: str | None = None  # JSON list [{"heading","body"}]
+    sections: str | None = None  # JSON list [{"heading","body","image"?}]
     mantra: str | None = Field(None, max_length=500)
     mantra_note: str | None = Field(None, max_length=500)
     source_note: str | None = None
@@ -141,10 +141,14 @@ class DeityArticleIn(BaseModel):
         for it in data:
             if not isinstance(it, dict):
                 raise ValueError("sections แต่ละรายการต้องเป็นออบเจ็กต์")
-            clean.append({
+            entry = {
                 "heading": str(it.get("heading") or "")[:200],
                 "body": str(it.get("body") or "")[:8000],
-            })
+            }
+            image = str(it.get("image") or "").strip()[:1000]
+            if image.startswith(("https://", "http://")):  # รับเฉพาะลิงก์เว็บ (กันค่าแปลกปลอม)
+                entry["image"] = image
+            clean.append(entry)
         return json.dumps(clean, ensure_ascii=False)
 
 

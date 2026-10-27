@@ -28,3 +28,4 @@ sonar_issues.json
 _sonarfix_backup/
 coverage.xml
 .coverage
+sonar_measures.json

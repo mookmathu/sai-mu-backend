@@ -27,3 +27,15 @@ do {
 } while (($page - 1) * 500 -lt $r.paging.total)
 $all | ConvertTo-Json -Depth 4 | Out-File -Encoding utf8 sonar_issues.json
 Write-Host "บันทึก $($all.Count) issue ลง sonar_issues.json แล้ว"
+
+# --- ตัวเลขสรุปโปรเจกต์ (ขนาดโค้ด, เกรด, coverage, quality gate) -> sonar_measures.json
+try {
+    $metrics = "ncloc,coverage,line_coverage,duplicated_lines_density,bugs,vulnerabilities,code_smells,security_hotspots,reliability_rating,security_rating,sqale_rating,alert_status,tests,files"
+    $m = Invoke-RestMethod -Uri "$Host_/api/measures/component?component=$Project&metricKeys=$metrics" -Headers @{ Authorization = $auth }
+    $gate = Invoke-RestMethod -Uri "$Host_/api/qualitygates/project_status?projectKey=$Project" -Headers @{ Authorization = $auth }
+    @{ measures = $m.component.measures; gate = $gate.projectStatus } | ConvertTo-Json -Depth 6 |
+        Out-File -Encoding utf8 sonar_measures.json
+    Write-Host "บันทึกตัวเลขสรุปลง sonar_measures.json แล้ว"
+} catch {
+    Write-Host "ดึงตัวเลขสรุปไม่ได้: $($_.Exception.Message)"
+}

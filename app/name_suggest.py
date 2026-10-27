@@ -45,7 +45,7 @@ def extract_day_index(question: str) -> int | None:
 
 
 def extract_gender(question: str) -> str | None:
-    if re.search(r"ลูกสาว|หลานสาว|ผู้หญิง|เด็กหญิง|ผู้หญิง|ชื่อหญิง|\bหญิง", question):
+    if re.search(r"ลูกสาว|หลานสาว|ผู้หญิง|เด็กหญิง|ชื่อหญิง|\bหญิง", question):
         return "f"
     if re.search(r"ลูกชาย|หลานชาย|ผู้ชาย|เด็กชาย|ชื่อชาย|\bชาย", question):
         return "m"

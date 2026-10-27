@@ -30,6 +30,8 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 
+_USERS_ID = "users.id"
+
 class User(Base):
     __tablename__ = "users"
 
@@ -75,7 +77,7 @@ class UserAstroProfile(Base):
     __tablename__ = "user_astro_profiles"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey(_USERS_ID), unique=True, nullable=False)
 
     zodiac_sign = Column(String(20), nullable=False)  # ราศี เช่น "กันย์"
     zodiac_animal = Column(String(20), nullable=False)  # ปีนักษัตร เช่น "มะเมีย"
@@ -89,7 +91,7 @@ class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey(_USERS_ID), nullable=False, index=True)
 
     role = Column(String(20), nullable=False)  # "user" หรือ "assistant"
     content = Column(Text, nullable=False)
@@ -113,7 +115,7 @@ class HistoryEntry(Base):
     __table_args__ = (UniqueConstraint("user_id", "ref_key", name="uq_history_user_ref"),)
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey(_USERS_ID, ondelete="CASCADE"), nullable=False, index=True)
     kind = Column(String(20), nullable=False)
     category = Column(String(20), nullable=False, index=True)
     title = Column(String(200), nullable=False)

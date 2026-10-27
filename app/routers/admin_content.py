@@ -34,6 +34,9 @@ def require_admin_key(x_admin_key: str | None = Header(default=None)) -> None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Admin key ไม่ถูกต้อง")
 
 
+_MSG_ITEM_NOT_FOUND = "ไม่พบรายการนี้"
+_MSG_NOT_FOUND = "ไม่พบข้อมูล"
+
 router = APIRouter(
     prefix="/admin/content",
     tags=["admin-content"],
@@ -54,19 +57,19 @@ def create_daily_color(data: DailyColorChartIn, db: Session = Depends(get_db)):
     return crud.create_daily_color_chart(db, data)
 
 
-@router.put("/daily-colors/{item_id}", response_model=DailyColorChartOut, responses={404: {"description": "ไม่พบข้อมูล"}})
+@router.put("/daily-colors/{item_id}", response_model=DailyColorChartOut, responses={404: {"description": _MSG_NOT_FOUND}})
 def update_daily_color(item_id: int, data: DailyColorChartIn, db: Session = Depends(get_db)):
     item = crud.get_daily_color_chart(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     return crud.update_daily_color_chart(db, item, data)
 
 
-@router.delete("/daily-colors/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
+@router.delete("/daily-colors/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": _MSG_NOT_FOUND}})
 def delete_daily_color(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_daily_color_chart(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     crud.delete_daily_color_chart(db, item)
 
 
@@ -83,19 +86,19 @@ def create_sacred_place(data: SacredPlaceIn, db: Session = Depends(get_db)):
     return crud.create_sacred_place(db, data)
 
 
-@router.put("/sacred-places/{item_id}", response_model=SacredPlaceOut, responses={404: {"description": "ไม่พบข้อมูล"}})
+@router.put("/sacred-places/{item_id}", response_model=SacredPlaceOut, responses={404: {"description": _MSG_NOT_FOUND}})
 def update_sacred_place(item_id: int, data: SacredPlaceIn, db: Session = Depends(get_db)):
     item = crud.get_sacred_place(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     return crud.update_sacred_place(db, item, data)
 
 
-@router.delete("/sacred-places/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
+@router.delete("/sacred-places/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": _MSG_NOT_FOUND}})
 def delete_sacred_place(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_sacred_place(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     crud.delete_sacred_place(db, item)
 
 
@@ -114,20 +117,20 @@ def create_article(data: DeityArticleIn, db: Session = Depends(get_db)):
     return crud.create_deity_article(db, data)
 
 
-@router.put("/articles/{item_id}", response_model=DeityArticleOut, responses={404: {"description": "ไม่พบข้อมูล"}, 409: {"description": "ข้อมูลซ้ำหรือขัดแย้งกับที่มีอยู่"}})
+@router.put("/articles/{item_id}", response_model=DeityArticleOut, responses={404: {"description": _MSG_NOT_FOUND}, 409: {"description": "ข้อมูลซ้ำหรือขัดแย้งกับที่มีอยู่"}})
 def update_article(item_id: int, data: DeityArticleIn, db: Session = Depends(get_db)):
     item = crud.get_deity_article(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     other = crud.get_deity_article_by_slug(db, data.slug)
     if other is not None and other.id != item.id:
         raise HTTPException(status_code=409, detail="รหัสบทความ (slug) นี้มีอยู่แล้ว")
     return crud.update_deity_article(db, item, data)
 
 
-@router.delete("/articles/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": "ไม่พบข้อมูล"}})
+@router.delete("/articles/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": _MSG_NOT_FOUND}})
 def delete_article(item_id: int, db: Session = Depends(get_db)):
     item = crud.get_deity_article(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="ไม่พบรายการนี้")
+        raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     crud.delete_deity_article(db, item)

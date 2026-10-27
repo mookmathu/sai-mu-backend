@@ -255,7 +255,8 @@ TIPS: dict[str, dict[str, list[str]]] = {
 
 
 def _fix_maiyamok(text: str) -> str:
-    out = re.sub(r"[ \t]*ๆ", " ๆ", text)
+    out = re.sub(r"[ \t]{2,}", " ", text)  # ยุบช่องว่างซ้ำก่อน แล้วจับช่องว่างเดี่ยวหน้า ๆ (เลี่ยง regex ที่ backtrack)
+    out = re.sub(r"[ \t]?ๆ", " ๆ", out)
     out = re.sub(r"ๆ(?=[^\s!?.,…~)\"'”’ๆ])", "ๆ ", out)
     return re.sub(r"[ \t]{2,}", " ", out)
 
@@ -313,7 +314,7 @@ def build_daily_report(
     focus, headline, summary, tip = daily_fortune.HOUSE_FORTUNE[house_no - 1]
     phase = lunar_phase(today)
 
-    score = {k: 3 for k in _KEYS}
+    score = dict.fromkeys(_KEYS, 3)
     factors: list[dict] = []
 
     # 1) ภพที่จันทร์ผ่าน

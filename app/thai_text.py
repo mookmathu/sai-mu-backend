@@ -21,7 +21,8 @@ _THAI_CHAR = re.compile(r"[฀-๿]")
 
 
 def fix_maiyamok(text: str) -> str:
-    out = re.sub(r"[ \t]*ๆ", " ๆ", text)
+    out = re.sub(r"[ \t]{2,}", " ", text)  # ยุบช่องว่างซ้ำก่อน แล้วจับช่องว่างเดี่ยวหน้า ๆ (เลี่ยง regex ที่ backtrack)
+    out = re.sub(r"[ \t]?ๆ", " ๆ", out)
     out = re.sub(r"ๆ(?=[^\s!?.,…~)\"'”’ๆ])", "ๆ ", out)
     out = re.sub(r"(?<=ๆ)[ \t]+(?=ๆ)", " ", out)
     out = re.sub(r"^[ \t]+ๆ", "ๆ", out, flags=re.MULTILINE)

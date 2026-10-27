@@ -114,12 +114,31 @@ _PARTICLE_RE = re.compile(
 _NA_RE = re.compile(r"(?<![ชธ])นะ(?=\s|$|[!?.,…~\U0001F000-\U0001FAFF])")
 
 
+_PUNCT_AFTER_SPACE = frozenset("!?.,…")
+
+
+def _drop_space_before_punct(text: str) -> str:
+    """ลบช่องว่าง/แท็บที่อยู่หน้า ! ? . , … (เทียบเท่า re.sub(r"[ \\t]+([!?.,…])", r"\\1") แต่ทำงานแบบเส้นตรง)"""
+    out: list[str] = []
+    pending: list[str] = []
+    for ch in text:
+        if ch in " \t":
+            pending.append(ch)
+            continue
+        if pending and ch not in _PUNCT_AFTER_SPACE:
+            out.extend(pending)
+        pending.clear()
+        out.append(ch)
+    out.extend(pending)
+    return "".join(out)
+
+
 def strip_particles(text: str) -> str:
     """ล้างคำลงท้าย ค่ะ/คะ/ครับ/จ้ะ ที่เล็ดลอดมา (LLM ไม่ทำตาม prompt 100%) —
     "นะคะ" ถูกตัดทั้งคำ ส่วน "นะ" เดี่ยวๆ ที่ไม่มีคำลงท้ายตามหลังคงไว้"""
     out = _PARTICLE_RE.sub("", text)
     out = _NA_RE.sub("", out)
-    return re.sub(r"[ \t]+([!?.,…])", r"\1", out)
+    return _drop_space_before_punct(out)
 
 
 _LATIN_WORD_RE = re.compile(r"[A-Za-z]{2,}")
@@ -134,7 +153,8 @@ def _has_stray_latin(text: str, prompt: str) -> bool:
 def fix_maiyamok(text: str) -> str:
     """ไม้ยมก (ๆ) เว้นวรรคหน้าและหลังเสมอ เช่น "ดีๆ นะ" -> "ดี ๆ นะ"
     (ไม่เว้นหลัง ๆ ถ้าท้ายบรรทัดหรือตามด้วยเครื่องหมายวรรคตอน)"""
-    out = re.sub(r"[ \t]*ๆ", " ๆ", text)
+    out = re.sub(r"[ \t]{2,}", " ", text)  # ยุบช่องว่างซ้ำก่อน แล้วจับช่องว่างเดี่ยวหน้า ๆ (เลี่ยง regex ที่ backtrack)
+    out = re.sub(r"[ \t]?ๆ", " ๆ", out)
     out = re.sub(r"ๆ(?=[^\s!?.,…~)\"'”’ๆ])", "ๆ ", out)
     out = re.sub(r"(?<=ๆ)[ \t]+(?=ๆ)", " ", out)
     out = re.sub(r"^[ \t]+ๆ", "ๆ", out, flags=re.MULTILINE)
@@ -397,16 +417,16 @@ class GeminiClient:
         raise last_error.original
 
     def _config(self, model: str) -> types.GenerateContentConfig:
-        kwargs = dict(
-            system_instruction=SYSTEM_PROMPT,
+        kwargs = {
+            "system_instruction": SYSTEM_PROMPT,
             # 0.3 เดิมทำให้คำตอบดวงประจำวัน/ดวงราศีออกมาเหมือนท่องข้อมูล
             # อ้างอิงตรงๆ ทุกครั้ง (deterministic เกินไปสำหรับงานเรียบเรียง
             # เชิงสร้างสรรค์) ขยับขึ้นมาให้มีสีสัน/ถ้อยคำที่หลากหลายขึ้น
             # โดยยังคุมด้วย system prompt ที่ห้ามแต่งข้อมูลนอกเหนือ reference
             # อยู่แล้ว จึงไม่กระทบความถูกต้องของเนื้อหา
             # โมเดลสำรอง (flash-lite) เล็กกว่า สุ่มคำเพี้ยนง่ายเมื่อ temperature สูง จึงลดลง
-            temperature=0.8 if model == DEFAULT_MODEL else 0.5,
-        )
+            "temperature": 0.8 if model == DEFAULT_MODEL else 0.5,
+        }
         if model not in self._no_thinking_config:
             # gemini-2.5-flash "คิด" (thinking) ก่อนตอบเป็นค่าเริ่มต้น ทำให้ช้าขึ้น
             # หลายวินาที งานนี้เป็นการเรียบเรียงจากข้อมูลอ้างอิงที่ให้ไว้ ไม่ต้องใช้
