@@ -447,8 +447,9 @@
         </div>
         <div class="field full">
           <label for="articleImageUrl">ลิงก์รูปภาพ (ไม่บังคับ)</label>
-          <input id="articleImageUrl" type="text" placeholder="https://..." />
-          <div class="hint">ไม่ใส่ = แอปจะใช้ไอคอนแทน ควรใช้รูปที่มีสิทธิ์นำมาใช้เท่านั้น</div>
+          <input id="articleImageUrl" type="text" placeholder="https://... หรือกดเลือกไฟล์รูปด้านล่าง" />
+          <input type="file" accept="image/png,image/jpeg,image/webp" aria-label="อัปโหลดรูปบทความ" onchange="uploadImageTo(this, document.getElementById('articleImageUrl'))" />
+          <div class="hint">เลือกไฟล์รูป (JPG/PNG/WEBP ไม่เกิน 2 MB) ระบบจะอัปโหลดและใส่ลิงก์ให้เอง ไม่ใส่ = แอปจะใช้ไอคอนแทน ควรใช้รูปที่มีสิทธิ์นำมาใช้เท่านั้น</div>
         </div>
 
         <div class="section-title">📖 เนื้อหา</div>
@@ -992,9 +993,13 @@
     body.value = item ? (item.body || '') : '';
     const img = document.createElement('input');
     img.type = 'text'; img.className = 'art-image';
-    img.placeholder = 'ลิงก์รูปประกอบหัวข้อนี้ (ไม่บังคับ) เช่น รูปสัญลักษณ์ https://...';
+    img.placeholder = 'รูปประกอบหัวข้อนี้ (ไม่บังคับ) วางลิงก์ หรือเลือกไฟล์ด้านล่าง';
     img.value = item ? (item.image || '') : '';
-    fields.appendChild(heading); fields.appendChild(body); fields.appendChild(img);
+    const imgFile = document.createElement('input');
+    imgFile.type = 'file'; imgFile.accept = 'image/png,image/jpeg,image/webp';
+    imgFile.setAttribute('aria-label', 'อัปโหลดรูปประกอบหัวข้อ');
+    imgFile.onchange = () => uploadImageTo(imgFile, img);
+    fields.appendChild(heading); fields.appendChild(body); fields.appendChild(img); fields.appendChild(imgFile);
     const btns = document.createElement('div');
     btns.className = 'rep-btns';
     const up = document.createElement('button');
@@ -1011,6 +1016,31 @@
     list.appendChild(row);
     refreshNumbers('articleSectionList');
     return row;
+  }
+  async function uploadImageTo(fileInput, targetInput) {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      showMessage('กำลังอัปโหลดรูป...', false);
+      const res = await fetch(apiBase() + '/admin/content/images', {
+        method: 'POST', headers: { 'X-Admin-Key': adminKey() }, body: form,
+      });
+      if (res.status === 401) throw new Error('Admin Key ไม่ถูกต้อง');
+      if (!res.ok) {
+        let detail = res.statusText;
+        try { detail = (await res.json()).detail || detail; } catch (e) {}
+        throw new Error(detail);
+      }
+      const data = await res.json();
+      targetInput.value = apiBase() + data.path;
+      showMessage('อัปโหลดรูปแล้ว — กดบันทึกบทความเพื่อใช้งาน', false);
+    } catch (e) {
+      showMessage('อัปโหลดรูปไม่สำเร็จ: ' + e.message, true);
+    } finally {
+      fileInput.value = '';
+    }
   }
   function serializeArticleSections() {
     const out = [];

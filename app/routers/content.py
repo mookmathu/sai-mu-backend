@@ -13,7 +13,7 @@ admin key) — ไม่ฝัง admin key ไว้ในตัวแอปม
 
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
 from .. import models
@@ -105,3 +105,16 @@ def list_articles(db: Session = Depends(get_db)):
         d["source_note"] = None
         out.append(d)
     return out
+
+
+@router.get("/images/{image_id}", responses={404: {"description": "ไม่พบรูป"}})
+def get_uploaded_image(image_id: int, db: Session = Depends(get_db)):
+    """เสิร์ฟรูปที่แอดมินอัปโหลด — เปิดดูได้โดยไม่ต้อง login เพราะแอปใช้ Image.network"""
+    img = db.get(models.UploadedImage, image_id)
+    if img is None:
+        raise HTTPException(status_code=404, detail="ไม่พบรูป")
+    return Response(
+        content=img.data,
+        media_type=img.content_type,
+        headers={"Cache-Control": "public, max-age=86400"},
+    )

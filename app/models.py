@@ -24,7 +24,7 @@ models.py
 from datetime import datetime
 from .timeutil import utcnow
 
-from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Text, Time, UniqueConstraint
+from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text, Time, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -230,3 +230,14 @@ class DeityArticle(Base):
 
     created_at = Column(DateTime, default=utcnow, nullable=False)
     updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+
+
+class UploadedImage(Base):
+    """รูปที่แอดมินอัปโหลด (รูปบทความ/รูปสัญลักษณ์) เก็บในฐานข้อมูลโดยตรง
+    เพราะดิสก์ของ Render ไม่ถาวร — รีสตาร์ท/deploy ใหม่แล้วไฟล์จะหาย แต่ฐานข้อมูลไม่หาย"""
+    __tablename__ = "uploaded_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content_type = Column(String(30), nullable=False)
+    data = Column(LargeBinary, nullable=False)
+    created_at = Column(DateTime, default=utcnow, nullable=False)

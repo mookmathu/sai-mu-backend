@@ -11,10 +11,12 @@ CRUD API สำหรับเนื้อหาที่จัดการผ�
 เข้าถึง — ถ้าในอนาคตมีทีมงานหลายคนต้องเข้าใช้ ค่อยเปลี่ยนไปทำระบบ role จริงทีหลัง
 """
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, File, Header, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from .. import content_crud as crud
+from .. import models
+from ..avatars import _detect_extension
 from ..config import settings
 from ..content_schemas import (
     DailyColorChartIn,
@@ -134,3 +136,31 @@ def delete_article(item_id: int, db: Session = Depends(get_db)):
     if item is None:
         raise HTTPException(status_code=404, detail=_MSG_ITEM_NOT_FOUND)
     crud.delete_deity_article(db, item)
+
+
+# ---------- อัปโหลดรูป (รูปบทความ / รูปสัญลักษณ์) ----------
+
+MAX_IMAGE_BYTES = 2 * 1024 * 1024  # 2 MB
+_IMAGE_TYPES = {"jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}
+
+
+@router.post(
+    "/images",
+    status_code=status.HTTP_201_CREATED,
+    responses={400: {"description": "ไฟล์ไม่ใช่รูปที่รองรับ"}, 413: {"description": "รูปใหญ่เกินไป"}},
+)
+async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """รับไฟล์รูป เก็บลงฐานข้อมูล แล้วคืน path สำหรับเสิร์ฟ (/content/images/<id>)"""
+    data = await file.read(MAX_IMAGE_BYTES + 1)
+    if not data:
+        raise HTTPException(status_code=400, detail="ไม่พบไฟล์รูป")
+    if len(data) > MAX_IMAGE_BYTES:
+        raise HTTPException(status_code=413, detail="รูปใหญ่เกินไป (สูงสุด 2 MB)")
+    ext = _detect_extension(data)  # ดูจาก magic bytes ไม่เชื่อ Content-Type ที่ส่งมา
+    if ext is None:
+        raise HTTPException(status_code=400, detail="รองรับเฉพาะไฟล์รูป JPG, PNG หรือ WEBP")
+    img = models.UploadedImage(content_type=_IMAGE_TYPES[ext], data=data)
+    db.add(img)
+    db.commit()
+    db.refresh(img)
+    return {"id": img.id, "path": f"/content/images/{img.id}"}
